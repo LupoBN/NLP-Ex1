@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def parse_pos_reading(lines):
     content = [["^^^^^/Start"] + line.split(" ")[0:-1] for line in lines]
     data = [word for line in content for word in line]
@@ -61,6 +62,7 @@ class ProbabilityContainer:
         self._q = dict()
         self._e = dict()
 
+    # Gets a dictionary of label keys and maps them to their count.
     def calculate_q_probs(self, labels_count):
         for key in labels_count:
             tokens = key.split(" ")
@@ -72,18 +74,22 @@ class ProbabilityContainer:
             else:
                 self._q[key] = labels_count[key] / len(labels_count)
 
+    # Gets a dictionary of label and word and maps them to their count.
     def calculate_e_probs(self, label_word_count, labels):
         for key in label_word_count:
             self._e[key] = label_word_count[key] / labels[key.split(" ")[-1]]
 
-    # Returns the LOG e probability for word given a label.
+    # Gets a word and a label and returns the LOG e probability for that word given that label.
     def get_e_prob(self, word, label):
         key = word + " " + label
         if key not in self._e:
             return 0
         return np.log(self._e[key])
 
-    # Returns the LOG q probability for a label.
+    """
+    Gets a label and returns the LOG q probability for that label (according to the conditional
+    probabilities described in class).
+    """
     def get_q_prob(self, label):
         if label not in self._q:
             return 0
