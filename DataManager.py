@@ -1,7 +1,14 @@
+import numpy as np
+
 def parse_pos_reading(lines):
     content = [["^^^^^/Start"] + line.split(" ")[0:-1] for line in lines]
     data = [word for line in content for word in line]
     return [word.rsplit("/", 1) for word in data]
+
+
+def parse_count_reading(lines):
+    pairs_count = {line.split("\t")[0]: float(line.split("\t")[1]) for line in lines}
+    return pairs_count
 
 
 def parse_pos_writing(counts):
@@ -54,22 +61,30 @@ class ProbabilityContainer:
         self._q = dict()
         self._e = dict()
 
-    def calculate_probs(self, labels_count, label_word_count):
-        pass
+    def calculate_q_probs(self, labels_count):
+        for key in labels_count:
+            tokens = key.split(" ")
+            number_of_tokens = len(tokens)
+            if number_of_tokens == 3:
+                self._q[key] = labels_count[key] / labels_count[(" ".join(tokens[0:1]))]
+            elif number_of_tokens == 2:
+                self._q[key] = labels_count[key] / labels_count[(" ".join(tokens[0:1]))]
+            else:
+                self._q[key] = labels_count[key] / len(labels_count)
 
-    def get_e_probs(self, words, labels):
-        raise NotImplementedError
+    def calculate_e_probs(self, label_word_count, labels):
+        for key in label_word_count:
+            self._e[key] = label_word_count[key] / labels[key.split(" ")[-1]]
 
-    def get_q_probs(self, labels):
-        raise NotImplementedError
+    # Returns the LOG e probability for word given a label.
+    def get_e_prob(self, word, label):
+        key = word + " " + label
+        if key not in self._e:
+            return 0
+        return np.log(self._e[key])
 
-
-words_and_labels = read_file("data/ass1-tagger-train", parse_pos_reading)
-words = [data[0] for data in words_and_labels]
-labels = [data[1] for data in words_and_labels]
-
-labels_count, labels_set = count_labels(labels, 3)
-write_file("q.mle", labels_count, parse_pos_writing)
-
-pairs_count = label_word_pairs(words, labels)
-write_file("e.mle", pairs_count, parse_pos_writing)
+    # Returns the LOG q probability for a label.
+    def get_q_prob(self, label):
+        if label not in self._q:
+            return 0
+        return np.log(self._q[label])
