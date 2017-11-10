@@ -49,7 +49,6 @@ def label_word_pairs(words, labels):
     return pairs_count
 
 
-# TODO: Split might loss some numbers between them are 5/100 (5 divided by 100).
 class ProbabilityContainer:
     def __init__(self):
         self._q = dict()
