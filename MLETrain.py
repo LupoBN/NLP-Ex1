@@ -1,5 +1,6 @@
 from DataManager import *
 import sys
+
 if __name__ == '__main__':
     words_and_labels = read_file(sys.argv[1], parse_pos_reading)
     words = [data[0] for data in words_and_labels]
@@ -10,5 +11,3 @@ if __name__ == '__main__':
 
     pairs_count = label_word_pairs(words, labels)
     write_file(sys.argv[3], pairs_count, parse_pos_writing)
-
-
