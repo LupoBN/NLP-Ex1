@@ -23,6 +23,6 @@ Need to calculate:
 
 
 TODO:
-1) Add Methods to data manager that returns e(xi_yi), q(yi|yi-1, yi-2)
+1) Add Methods to data manager that returns e(xi_yi), q(yi|yi-1, yi-2), q(yi|y-1), q(yi)
 2) Add greedy tagger class.
 3) add viterbi tagger class.
