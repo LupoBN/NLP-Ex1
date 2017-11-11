@@ -1,46 +1,44 @@
-import DataManager
+#import DataManager
+import random
 
+class DummyProbsProvider():
+    def __init__(self):
+        pass
+
+    def get_q(self, y, t1, t2):
+        """simulates the conditional probability q(y|t1t2)"""
+        return random.random()
+
+    def get_e(self, x, y):
+        """simulates the conditional probability of a word x given a pos y"""
+        return random.random()
 
 class GreedyTagger:
-    def __init__(self, e_count, q_count):
-        self.e_count = e_count
-        self.q_count = q_count
-        self.labels_set = DataManager.labels_set
+    def __init__(self, labels_set):
+        self.labels_set = labels_set
+        self.probs = DummyProbsProvider()
 
-    def get_count(self, dictionary, key):
-        if (key in dictionary.keys()):
-            return dictionary[key]
-        else:
-            return 0
+    def predict_tags(self, words):
+        """
 
+        :param words: an ordered list of all words in the sequence to predict
+        :return: predictions: an ordered list of the predicted labels
+        """
 
-    def predict_tags(self, file_name):
-        words_and_labels, words, labels = DataManager.DataManager.read_file(file_name)
-        labels = set(labels)
-        predictons = []
+        predictions = ["START", "START"]
         for word in words:
             best_label = None
-            best_prob = -1.
-            for i, label in enumerate(self.labels_set):
-                word_label = word + " " + label
-                if i >= 2:
-                    last_two = " ".join([predictons[-2], predictons[-1]])
-                    q_nom = self.get_count(self.q_count, last_two + " " + label)
-                    if q_nom == 0:
-                        q = 0.
-                    else:
-                        q = q_nom / (1. * self.q_count[last_two])
-                else:
-                    q = self.q_count[label]
-                e = self.e_count[word_label] / (1. * self.e_count[label])
-                if q * e > best_prob:
-                    best_prob = q * e
-                    best_label = label
-                    predictons.add(best_label)
-        return predictons
+            best_prob = -1
+            for i, current_label in enumerate(self.labels_set):
+                last_two = predictions[-2], predictions[-1]
+                e, q = self.probs.get_e(word, current_label),\
+                       self.probs.get_q(word, last_two[0], last_two[1])
+                if e * q > best_prob:
+                    best_label, best_prob = current_label, e*q
+            predictions.append(best_label)
+        return predictions
 
-
-gt = GreedyTagger(DataManager.pairs_count, DataManager.labels_count)
-gt.predict_tags("data/ass1-tagger-train")
-
-i = 5
+labels = {"NN", "NP", "V"}
+words = "hello how are you".split(" ")
+gt = GreedyTagger(labels)
+print gt.predict_tags(words)
