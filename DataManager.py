@@ -35,9 +35,9 @@ def parse_possible_labels(word_and_labels):
     for i, word_label in enumerate(word_and_labels):
         word, label = word_label
         if not word in possible_labels:
-            possible_labels[word] = [label]
+            possible_labels[word] = set(label)
         else:
-            possible_labels[word].append(label)
+            possible_labels[word].add(label)
     return possible_labels
 
 def read_file(file_name, parse_func):
