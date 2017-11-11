@@ -19,6 +19,27 @@ def parse_pos_writing(counts):
     return my_str
 
 
+def parse_possible_labels_writing(possible_labels):
+    my_str = ""
+    for key in possible_labels.keys():
+        my_str+=key
+        for label in possible_labels[key]:
+            my_str+='\t' + label
+        my_str+='\n'
+    return my_str
+
+def parse_possible_labels(word_and_labels):
+    """returns a dictionary possible_labels where possible_labels[word] is a list
+    of all labels encountered in the training set for that word. used for viterbi optimization. """
+    possible_labels = {}
+    for i, word_label in enumerate(word_and_labels):
+        word, label = word_label
+        if not word in possible_labels:
+            possible_labels[word] = [label]
+        else:
+            possible_labels[word].append(label)
+    return possible_labels
+
 def read_file(file_name, parse_func):
     file = open(file_name, 'r')
     lines = file.readlines()
