@@ -117,7 +117,6 @@ class ProbabilityContainer:
     def __init__(self, labels_count, labels_word_count, word_count, lambda_one=0.8, lambda_two=0.15, lambda_three=0.05):
         self._q = dict()
         self._e = dict()
-        self._unk = dict()
         self._word_count = word_count
         self._lambda_one = lambda_one
         self._lambda_two = lambda_two
