@@ -31,12 +31,18 @@ class GreedyTagger:
         for word in words[1:]: # ignore the first start tag
             best_label = None
             best_prob = -1
+
             for i, current_label in enumerate(labels):
+                #print "checking label ", current_label
                 last_two = predictions[-2], predictions[-1]
                 e, q = self.probs.get_e_prob(word, current_label),\
-                       self.probs.get_q_prob(current_label, last_two[0], last_two[1])
+                       self.probs.get_q_prob(current_label, last_two[-1], last_two[-2])
+                print "e is ", e, " and q is ", q, " word is ", word, " and labels are ", last_two[0], " ", last_two[1], " ", current_label
+                assert e > 0
+                assert q > 0
                 if e * q > best_prob:
                     best_label, best_prob = current_label, e*q
+            print "best prob for word ", word, " is ", best_prob
             predictions.append(best_label)
 
         return predictions[2:] #ignore the two start tags
@@ -47,6 +53,6 @@ class GreedyTagger:
 if __name__ == '__main__':
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
     labels = {"NN", "NP", "V"}
-    words = "^^^^^ hello how are you".split(" ")
+    words = "^^^^^ How are you .".split(" ")
     gt = GreedyTagger(labels, probability_provider)
     print gt.predict_tags(words)

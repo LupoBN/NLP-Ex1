@@ -193,7 +193,7 @@ class ProbabilityContainer:
             if word.endswith(suffix):
                 end_pair = "UNK." + suffix + " " + label
                 if end_pair in self._e:
-                    return np.log(self._e[end_pair])
+                    return -np.log(self._e[end_pair])
         return prob
 
     def _prefixes_prob(self, word, label):
@@ -202,7 +202,7 @@ class ProbabilityContainer:
             if word.startswith(prefix):
                 start_pair = prefix + ".UNK" + " " + label
                 if start_pair in self._e:
-                    prob = np.log(self._e[start_pair])
+                    prob = -np.log(self._e[start_pair])
         return prob
 
     # Gets a word and a label and returns the LOG e probability for that word given that label.
@@ -210,16 +210,16 @@ class ProbabilityContainer:
         prob = 0
         key = word + " " + label
         if key in self._word_count and self._word_count[key] > 2:
-            prob = np.log(self._e[key])
+            prob = -np.log(self._e[key])
         else:
             unk_label = "UNK " + label
             suffix_prob = self._suffixes_prob(word, label)
             prefix_prob = self._prefixes_prob(word, label)
             if unk_label in self._e:
-                prob = 0.7 * np.log(self._e["UNK " + label]) + 0.15 * suffix_prob + 0.15 * prefix_prob
+                prob = 0.7 * -np.log(self._e["UNK " + label]) + 0.15 * suffix_prob + 0.15 * prefix_prob
             else:
                 if prob == 0:
-                    return np.log(1.0 / float(len(self._label_set)))
+                    return -np.log(1.0 / float(len(self._label_set)))
         return prob
 
     """"
@@ -228,18 +228,20 @@ class ProbabilityContainer:
     """
 
     def get_q_prob(self, y, t2, t1):
-        p1, p2, p3 = 0, 0, np.log(self._q[y])
+        p1, p2, p3 = 0, 0, -np.log(self._q[y])
         one_backwards = y + " " + t2
         two_backwards = one_backwards + " " + t1
         # Special case when looking at the first word.
         if t2 == "Start":
             if one_backwards in self._q:
-                return np.log(self._q[one_backwards])
+                return -np.log(self._q[one_backwards])
             else:
-                return np.log(self._q[y])
+                print "result is ", -np.log(self._q[y]), " before -log: ",self._q[y]
+                return -np.log(self._q[y]) #TODO: ask Matan (START, START, ,)
         if one_backwards in self._q:
-            p2 = np.log(self._q[one_backwards])
+            p2 = -np.log(self._q[one_backwards])
             if two_backwards in self._q:
-                p3 = np.log(self._q[two_backwards])
+                p3 = -np.log(self._q[two_backwards])
+
         return self._lambda_one * p1 + self._lambda_two * p2 + self._lambda_three * p3
 
