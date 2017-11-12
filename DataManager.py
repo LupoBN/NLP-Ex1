@@ -73,7 +73,7 @@ def count_labels(labels, order):
     return labels_count, labels_set
 
 
-def label_UNK(word, label, pairs_count):
+def label_UNK_sig(word, label, pairs_count):
     for suffix in SUFFIXES:
         if word.endswith(suffix):
             end_pair = "UNK." + suffix + " " + label
@@ -95,11 +95,13 @@ def label_UNK(word, label, pairs_count):
         else:
             pairs_count[begin_pair] += 1
 
-
-def label_word_pairs(words, labels):
+def label_word_pairs(words_and_labels):
     pairs_count = dict()
     word_count = dict()
-    for word, label in zip(words, labels):
+    first_half = words_and_labels[:len(words_and_labels) / 2]
+    second_half = words_and_labels[len(words_and_labels) / 2:]
+
+    for word, label in first_half:
         pair = word + " " + label
         if pair not in pairs_count:
             pairs_count[pair] = 1
@@ -109,7 +111,17 @@ def label_word_pairs(words, labels):
             word_count[word] = 1
         else:
             word_count[word] += 1
-        label_UNK(word, label, pairs_count)
+
+        label_UNK_sig(word, label, pairs_count)
+
+    for word, label in second_half:
+        pair = "UNK " + label
+        if pair not in pairs_count:
+            pairs_count[pair] = 1
+        else:
+            pairs_count[pair] += 1
+        label_UNK_sig(word, label, pairs_count)
+
     return pairs_count, word_count
 
 
@@ -146,7 +158,7 @@ class ProbabilityContainer:
     def get_e_prob(self, word, label):
         key = word + " " + label
         prob = -float("inf")
-        if key in self._word_count and self._word_count[key] > 1:
+        if key in self._word_count and self._word_count[key] > 2:
             prob = np.log(self._e[key])
         else:
             for suffix in SUFFIXES:
@@ -170,7 +182,7 @@ class ProbabilityContainer:
                     if start_pair_prob > prob:
                         prob = start_pair_prob
         if prob == -float("inf"):
-            prob = 0
+            prob = np.log(self._e["UNK " + label])
         return prob
 
     """"
