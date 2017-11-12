@@ -21,12 +21,12 @@ class GreedyTagger:
     def predict_tags(self, words):
         """
 
-        :param words: an ordered list of all words in the sequence to predict
+        :param words: an ordered list of all words in the sentence to predict. tarts with a start symbol
         :return: predictions: an ordered list of the predicted labels
         """
 
-        predictions = ["START", "START"]
-        for word in words:
+        predictions = ["Start", "Start"]
+        for word in words[1:]: # ignore the first start tag
             best_label = None
             best_prob = -1
             for i, current_label in enumerate(self.labels_set):
@@ -36,7 +36,8 @@ class GreedyTagger:
                 if e * q > best_prob:
                     best_label, best_prob = current_label, e*q
             predictions.append(best_label)
-        return predictions
+
+        return predictions[2:] #ignore the two start tags
 
 labels = {"NN", "NP", "V"}
 words = "hello how are you".split(" ")
