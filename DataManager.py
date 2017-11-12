@@ -127,6 +127,9 @@ class ProbabilityContainer:
         self._calculate_q_probs(labels_count)
         self._calculate_e_probs(labels_word_count, labels_count)
 
+    def get_label_set(self):
+        return self._label_set
+
     def _calculate_UNK_sigs(self, pairs_count):
         unk_sig_dict = dict()
         for word_label in pairs_count:
