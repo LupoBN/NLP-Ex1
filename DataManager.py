@@ -232,8 +232,11 @@ class ProbabilityContainer:
         one_backwards = y + " " + t2
         two_backwards = one_backwards + " " + t1
         # Special case when looking at the first word.
-        if t1 == "Start":
-            return np.log(self._q[one_backwards])
+        if t2 == "Start":
+            if one_backwards in self._q:
+                return np.log(self._q[one_backwards])
+            else:
+                return np.log(self._q[y])
         if one_backwards in self._q:
             p2 = np.log(self._q[one_backwards])
             if two_backwards in self._q:
