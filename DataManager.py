@@ -154,35 +154,32 @@ class ProbabilityContainer:
             word_label = key.split(" ")
             self._e[key] = float(label_word_count[key]) / float(labels_count[word_label[-1]])
 
+    def _suffixes_prob(self, word, label):
+        prob = -float("inf")
+        for suffix in SUFFIXES:
+            if word.endswith(suffix):
+                end_pair = "UNK." + suffix + " " + label
+                if end_pair in self._e:
+                    prob = np.log(self._e[end_pair])
+        return prob
+
+    def _prefixes_prob(self, word, label):
+        prob = -float("inf")
+        for prefix in PREFIXES:
+            if word.startswith(prefix):
+                start_pair = prefix + ".UNK" + " " + label
+                if start_pair in self._e:
+                    prob = np.log(self._e[start_pair])
+        return prob
+
     # Gets a word and a label and returns the LOG e probability for that word given that label.
     def get_e_prob(self, word, label):
         key = word + " " + label
-        prob = -float("inf")
         if key in self._word_count and self._word_count[key] > 2:
             prob = np.log(self._e[key])
         else:
-            for suffix in SUFFIXES:
-                if word.endswith(suffix):
-                    end_pair = "UNK." + suffix + " " + label
-                    if end_pair in self._e:
-                        prob = np.log(self._e[end_pair])
-                        break
-            for prefix in PREFIXES:
-                if word.startswith(prefix):
-                    start_pair = prefix + ".UNK" + " " + label
-                    if start_pair in self._e:
-                        start_pair_prob = np.log(self._e[start_pair])
-                        if start_pair_prob > prob:
-                            prob = start_pair_prob
-                        break
-            if word[0].isupper():
-                start_pair = "Upper.UNK " + label
-                if start_pair in self._e:
-                    start_pair_prob = np.log(self._e[start_pair])
-                    if start_pair_prob > prob:
-                        prob = start_pair_prob
-        if prob == -float("inf"):
             prob = np.log(self._e["UNK " + label])
+            #TODO: Add the probabilites with prefixes or suffixes.
         return prob
 
     """"
