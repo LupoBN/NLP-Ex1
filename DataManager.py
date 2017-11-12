@@ -72,29 +72,6 @@ def count_labels(labels, order):
     return labels_count, labels_set
 
 
-def label_UNK_sig(word, label, pairs_count):
-    for suffix in SUFFIXES:
-        if word.endswith(suffix):
-            end_pair = "UNK." + suffix + " " + label
-            if end_pair not in pairs_count:
-                pairs_count[end_pair] = 1
-            else:
-                pairs_count[end_pair] += 1
-    for prefix in PREFIXES:
-        if word.endswith(prefix):
-            begin_pair = prefix + ".UNK" + " " + label
-            if begin_pair not in pairs_count:
-                pairs_count[begin_pair] = 1
-            else:
-                pairs_count[begin_pair] += 1
-    if word[0].isupper():
-        begin_pair = "Upper.UNK " + label
-        if begin_pair not in pairs_count:
-            pairs_count[begin_pair] = 1
-        else:
-            pairs_count[begin_pair] += 1
-
-
 def label_word_pairs(words_and_labels):
     pairs_count = dict()
     word_count = dict()
@@ -109,7 +86,6 @@ def label_word_pairs(words_and_labels):
         else:
             word_count[word] += 1
 
-        label_UNK_sig(word, label, pairs_count)
     return pairs_count, word_count
 
 
@@ -134,6 +110,7 @@ class ProbabilityContainer:
     def __init__(self, labels_count, labels_word_count, word_count, lambda_one=0.8, lambda_two=0.15, lambda_three=0.05):
         self._q = dict()
         self._e = dict()
+        self._calculate_UNK_sigs(labels_word_count)
         self._label_set = set()
         self._word_count = word_count
         self._lambda_one = lambda_one
@@ -142,8 +119,33 @@ class ProbabilityContainer:
         self._calculate_q_probs(labels_count)
         self._calculate_e_probs(labels_word_count, labels_count)
 
-    # Gets a dictionary of label keys and maps them to their count.
+    def _calculate_UNK_sigs(self, pairs_count):
+        unk_sig_dict = dict()
+        for word_label in pairs_count:
+            word, label = word_label.split(" ")
+            for suffix in SUFFIXES:
+                if word.endswith(suffix):
+                    end_pair = "UNK." + suffix + " " + label
+                    if end_pair not in unk_sig_dict:
+                        unk_sig_dict[end_pair] = 1
+                    else:
+                        unk_sig_dict[end_pair] += 1
+            for prefix in PREFIXES:
+                if word.endswith(prefix):
+                    begin_pair = prefix + ".UNK" + " " + label
+                    if begin_pair not in unk_sig_dict:
+                        unk_sig_dict[begin_pair] = 1
+                    else:
+                        unk_sig_dict[begin_pair] += 1
+            if word[0].isupper():
+                begin_pair = "Upper.UNK " + label
+                if begin_pair not in unk_sig_dict:
+                    unk_sig_dict[begin_pair] = 1
+                else:
+                    unk_sig_dict[begin_pair] += 1
+        pairs_count.update(unk_sig_dict)
 
+    # Gets a dictionary of label keys and maps them to their count.
     def _calculate_q_probs(self, labels_count):
         for key in labels_count:
             tokens = key.split(" ")
