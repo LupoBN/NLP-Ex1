@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 SUFFIXES = ["ing", "ed", "s"]
 PREFIXES = ["un", "de", "re"]
@@ -95,13 +94,11 @@ def label_UNK_sig(word, label, pairs_count):
         else:
             pairs_count[begin_pair] += 1
 
+
 def label_word_pairs(words_and_labels):
     pairs_count = dict()
     word_count = dict()
-    first_half = words_and_labels[:len(words_and_labels) / 2]
-    second_half = words_and_labels[len(words_and_labels) / 2:]
-
-    for word, label in first_half:
+    for word, label in words_and_labels:
         pair = word + " " + label
         if pair not in pairs_count:
             pairs_count[pair] = 1
@@ -113,22 +110,31 @@ def label_word_pairs(words_and_labels):
             word_count[word] += 1
 
         label_UNK_sig(word, label, pairs_count)
-
-    for word, label in second_half:
-        pair = "UNK " + label
-        if pair not in pairs_count:
-            pairs_count[pair] = 1
-        else:
-            pairs_count[pair] += 1
-        label_UNK_sig(word, label, pairs_count)
-
     return pairs_count, word_count
+
+
+def calculate_UNK_probs(words_and_labels):
+    first_half = words_and_labels[:len(words_and_labels) / 2]
+    first_haft_words = set()
+    second_half = words_and_labels[len(words_and_labels) / 2:]
+    unk_dict = dict()
+    for word, label in first_half:
+        first_haft_words.add(word)
+    for word, label in second_half:
+        if word not in first_haft_words:
+            word_pair = "UNK " + label
+            if word_pair in unk_dict:
+                unk_dict[word_pair] += 1
+            else:
+                unk_dict[word_pair] = 1
+    return unk_dict
 
 
 class ProbabilityContainer:
     def __init__(self, labels_count, labels_word_count, word_count, lambda_one=0.8, lambda_two=0.15, lambda_three=0.05):
         self._q = dict()
         self._e = dict()
+        self._label_set = set()
         self._word_count = word_count
         self._lambda_one = lambda_one
         self._lambda_two = lambda_two
@@ -137,6 +143,7 @@ class ProbabilityContainer:
         self._calculate_e_probs(labels_word_count, labels_count)
 
     # Gets a dictionary of label keys and maps them to their count.
+
     def _calculate_q_probs(self, labels_count):
         for key in labels_count:
             tokens = key.split(" ")
@@ -146,25 +153,33 @@ class ProbabilityContainer:
             elif number_of_tokens == 2:
                 self._q[key] = float(labels_count[key]) / float(labels_count[tokens[-1]])
             else:
+                self._label_set.add(key)
                 self._q[key] = float(labels_count[key]) / float(len(labels_count))
 
     # Gets a dictionary of label and word and maps them to their count.
     def _calculate_e_probs(self, label_word_count, labels_count):
+        unk_values = dict()
         for key in label_word_count:
             word_label = key.split(" ")
-            self._e[key] = float(label_word_count[key]) / float(labels_count[word_label[-1]])
+            if word_label[0] == "UNK":
+                unk_values[key] = label_word_count[key]
+            else:
+                self._e[key] = float(label_word_count[key]) / float(labels_count[word_label[-1]])
+        UNK_sum_values = sum(unk_values.values())
+        for key in unk_values:
+            self._e[key] = float(unk_values[key]) / float(UNK_sum_values)
 
     def _suffixes_prob(self, word, label):
-        prob = -float("inf")
+        prob = 0
         for suffix in SUFFIXES:
             if word.endswith(suffix):
                 end_pair = "UNK." + suffix + " " + label
                 if end_pair in self._e:
-                    prob = np.log(self._e[end_pair])
+                    return np.log(self._e[end_pair])
         return prob
 
     def _prefixes_prob(self, word, label):
-        prob = -float("inf")
+        prob = 0
         for prefix in PREFIXES:
             if word.startswith(prefix):
                 start_pair = prefix + ".UNK" + " " + label
@@ -174,12 +189,19 @@ class ProbabilityContainer:
 
     # Gets a word and a label and returns the LOG e probability for that word given that label.
     def get_e_prob(self, word, label):
+        prob = 0
         key = word + " " + label
         if key in self._word_count and self._word_count[key] > 2:
             prob = np.log(self._e[key])
         else:
-            prob = np.log(self._e["UNK " + label])
-            #TODO: Add the probabilites with prefixes or suffixes.
+            unk_label = "UNK " + label
+            suffix_prob = self._suffixes_prob(word, label)
+            prefix_prob = self._prefixes_prob(word, label)
+            if unk_label in self._e:
+                prob = 0.7 * np.log(self._e["UNK " + label]) + 0.15 * suffix_prob + 0.15 * prefix_prob
+            else:
+                if prob == 0:
+                    return np.log(1.0 / float(len(self._label_set)))
         return prob
 
     """"
