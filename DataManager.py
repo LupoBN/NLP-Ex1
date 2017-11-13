@@ -3,7 +3,6 @@ import numpy as np
 SUFFIXES = ["ing", "ed", "s"]
 PREFIXES = ["un", "de", "re"]
 
-
 def parse_pos_reading(lines):
     content = [["^^^^^/Start"] + line.split(" ")[0:-1] for line in lines]
     data = [word for line in content for word in line]
@@ -118,9 +117,10 @@ class ProbabilityContainer:
         self._q = dict()
         self._e = dict()
         self._word_count = dict()
+        self._label_set_count = dict()
+
         self._calculate_UNK_sigs(labels_word_count)
         self._label_set = set()
-
         self._lambda_one = lambda_one
         self._lambda_two = lambda_two
         self._lambda_three = lambda_three
@@ -138,6 +138,10 @@ class ProbabilityContainer:
                 self._word_count[word] = pairs_count[word_label]
             else:
                 self._word_count[word] += pairs_count[word_label]
+            if label not in self._label_set_count:
+                self._label_set_count[label] = pairs_count[word_label]
+            else:
+                self._label_set_count[label] += pairs_count[word_label]
 
             for suffix in SUFFIXES:
                 if word.endswith(suffix):
@@ -163,16 +167,17 @@ class ProbabilityContainer:
 
     # Gets a dictionary of label keys and maps them to their count.
     def _calculate_q_probs(self, labels_count):
+        labels_sum = sum(labels_count.values())
         for key in labels_count:
             tokens = key.split(" ")
             number_of_tokens = len(tokens)
             if number_of_tokens == 3:
-                self._q[key] = float(labels_count[key]) / float(labels_count[" ".join(tokens[1:-1])])
+                self._q[key] = float(labels_count[key]) / float(labels_count[" ".join(tokens[1:3])])
             elif number_of_tokens == 2:
                 self._q[key] = float(labels_count[key]) / float(labels_count[tokens[-1]])
             else:
                 self._label_set.add(key)
-                self._q[key] = float(labels_count[key]) / float(len(labels_count))
+                self._q[key] = float(labels_count[key]) / float(labels_sum)
 
     # Gets a dictionary of label and word and maps them to their count.
     def _calculate_e_probs(self, label_word_count, labels_count):
@@ -182,7 +187,7 @@ class ProbabilityContainer:
             if word_label[0] == "UNK":
                 unk_values[key] = label_word_count[key]
             else:
-                self._e[key] = float(label_word_count[key]) / float(labels_count[word_label[-1]])
+                self._e[key] = float(label_word_count[key]) / float(self._label_set_count[word_label[-1]])
         UNK_sum_values = sum(unk_values.values())
         for key in unk_values:
             self._e[key] = float(unk_values[key]) / float(UNK_sum_values)
@@ -193,7 +198,7 @@ class ProbabilityContainer:
             if word.endswith(suffix):
                 end_pair = "UNK." + suffix + " " + label
                 if end_pair in self._e:
-                    return -np.log(self._e[end_pair])
+                    return self._e[end_pair]
         return prob
 
     def _prefixes_prob(self, word, label):
@@ -202,24 +207,27 @@ class ProbabilityContainer:
             if word.startswith(prefix):
                 start_pair = prefix + ".UNK" + " " + label
                 if start_pair in self._e:
-                    prob = -np.log(self._e[start_pair])
+                    prob = self._e[start_pair]
         return prob
 
     # Gets a word and a label and returns the LOG e probability for that word given that label.
     def get_e_prob(self, word, label):
         prob = 0
         key = word + " " + label
-        if key in self._word_count and self._word_count[key] > 2:
-            prob = -np.log(self._e[key])
+        if word in self._word_count and self._word_count[word] > 2:
+            if key in self._e:
+                prob = self._e[key]
+            else:
+                prob = 0.0001
         else:
             unk_label = "UNK " + label
             suffix_prob = self._suffixes_prob(word, label)
             prefix_prob = self._prefixes_prob(word, label)
             if unk_label in self._e:
-                prob = 0.7 * -np.log(self._e["UNK " + label]) + 0.15 * suffix_prob + 0.15 * prefix_prob
+                prob = 0.7 * self._e["UNK " + label] + 0.15 * suffix_prob + 0.15 * prefix_prob
             else:
                 if prob == 0:
-                    return -np.log(1.0 / float(len(self._label_set)))
+                    return 1.0 / float(len(self._label_set))
         return prob
 
     """"
@@ -228,20 +236,26 @@ class ProbabilityContainer:
     """
 
     def get_q_prob(self, y, t2, t1):
-        p1, p2, p3 = 0, 0, -np.log(self._q[y])
+        p1, p2, p3 = 0, 0, self._q[y]
         one_backwards = y + " " + t2
         two_backwards = one_backwards + " " + t1
         # Special case when looking at the first word.
         if t2 == "Start":
             if one_backwards in self._q:
-                return -np.log(self._q[one_backwards])
+                return self._q[one_backwards]
             else:
-                print "result is ", -np.log(self._q[y]), " before -log: ",self._q[y]
-                return -np.log(self._q[y]) #TODO: ask Matan (START, START, ,)
+                return self._q[y]
         if one_backwards in self._q:
-            p2 = -np.log(self._q[one_backwards])
+            p2 = self._q[one_backwards]
             if two_backwards in self._q:
-                p3 = -np.log(self._q[two_backwards])
+                p3 = self._q[two_backwards]
 
-        return self._lambda_one * p1 + self._lambda_two * p2 + self._lambda_three * p3
+        prob = self._lambda_one * p1 + self._lambda_two * p2 + self._lambda_three * p3
+        assert prob >= 0 and prob <= 1
+        return prob
+
+
+if __name__ == '__main__':
+    pc = ProbabilityContainer("e_check.mle", "q_check.mle")
+    pass
 
