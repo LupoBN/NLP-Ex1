@@ -36,7 +36,7 @@ class GreedyTagger:
                 last_two = predictions[-2], predictions[-1]
                 e, q = self.probs.get_e_prob(word, current_label),\
                        self.probs.get_q_prob(current_label, last_two[-1], last_two[-2])
-                score = -np.log(e) - np.log(q)
+                score = np.log(e * q)
                 if score > best_prob:
                     best_label, best_prob = current_label, score
             print "best prob for word ", word, " is ", best_prob
@@ -49,6 +49,6 @@ class GreedyTagger:
 
 if __name__ == '__main__':
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
-    words = "^^^^^ maker last year sold".split(" ")
+    words = "^^^^^ The bill , whose backers include Chairman".split(" ")
     gt = GreedyTagger( probability_provider)
     print gt.predict_tags(words)
