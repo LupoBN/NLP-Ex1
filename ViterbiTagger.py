@@ -41,7 +41,6 @@ class ViterbiTagger:
         V = np.zeros((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
-        print "Shape is ", V.shape
         start_key = self.labels_set.index("Start")
 
         V[0][start_key][start_key] = 1.
@@ -59,13 +58,13 @@ class ViterbiTagger:
                 word_possible_labels = list(self.possible_labels[word])
             else:
                 word_possible_labels = self.labels_set
-            print word, word_possible_labels
+            #print word, word_possible_labels
 
             #print "possible labels for word ", word ," are", word_possible_labels
             for t in self.labels_set:
                 t_index = self.labels_set.index(t)
 
-                for r in self.labels_set:
+                for r in word_possible_labels:
                    r_index = self.labels_set.index(r)
                    max_val, max_t_prime = -float("inf"), None
 
@@ -76,8 +75,8 @@ class ViterbiTagger:
                        q = self.probs.get_q_prob(r, t, t_prime)
                        e = self.probs.get_e_prob(word, r)
 
-                       score = np.log(q * e) +  V_prev_t_t_prime
-
+                       #score = np.log(q * e) +  V_prev_t_t_prime
+                       score = q * e * V_prev_t_t_prime
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
@@ -89,7 +88,6 @@ class ViterbiTagger:
         calcualte max on t, r of V[n-1]
         """
         V_last = V[-1]
-        print V_last
         y_n_minus1, y_n = np.unravel_index(np.argmax(V_last),V_last.shape)
 
         y = [0]*n
@@ -118,19 +116,33 @@ print gt.predict_tags(words)
 if __name__ == '__main__':
     words_and_labels = DataManager.read_file("data/ass1-tagger-train", DataManager.parse_pos_reading)
     possible_labels = DataManager.parse_possible_labels(words_and_labels)
-    print "DONE"
+
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
     #words_orig = "^^^^^ One/NN might/MD think/VB that/IN the/DT home/NN fans/NNS in/IN this/DT Series/NNP of/IN the/DT Subway/NNP Called/VBN BART/NNP (/( that/DT 's/VBZ a/DT better/JJR name/NN for/IN a/DT public/JJ conveyance/NN than/IN ``/`` Desire/NN ,/, ''/'' do/VBP n't/RB you/PRP think/VBP ?/. )/) would/MD have/VB been/VBN ecstatic/JJ over/IN the/DT proceedings/NNS ,/, but/CC they/PRP observe/VBP them/PRP in/IN relative/JJ calm/NN ./.Partisans/NNS of/IN the/DT two/CD combatants/NNS sat/VBD side/NN by/IN side/NN".split(" ")
-    words_orig = "^^^^^ In/IN the/DT wake/NN of/IN Wall/NNP Street/NNP 's/POS plunge/NN last/JJ Friday/NNP ,/, the/DT London/NN".split(" ")
-    words = [word.split("/")[0] for word in words_orig]
+    f = open("data/ass1-tagger-test")
+    lines = f.readlines()
     vt = ViterbiTagger(probability_provider, possible_labels)
-    start = time.time()
-    preds =  vt.predict_tags(words)
-    print "time: ", time.time() - start
-    words = words[:]
-    print len(preds), len(words)
-    s = ""
-    for i, word in enumerate(words[1:]):
-        s+=word+ "("+preds[i]+") "
-    print s
-    print words_orig
+
+    good, bad = 0., 0.
+
+    for i in range(50):
+
+        words_orig = ("^^^^^/Start "+random.choice(lines) ).split(" ")
+        words = [word.split("/")[0] for word in words_orig]
+        labels =  [word.split("/")[1] for word in words_orig]
+
+        start = time.time()
+        preds =  vt.predict_tags(words)
+        print time.time() - start
+
+        s = ""
+        print labels[1:]
+        for i, word in enumerate(words[1:]):
+            s+=word+ "("+preds[i]+") "
+            if preds[i] == labels[i+1]:
+                good += 1
+            else:
+                bad += 1
+        print s
+        print words_orig[1:]
+        print "accuracy: ", (good)/(good+bad)
