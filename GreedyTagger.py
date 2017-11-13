@@ -39,7 +39,6 @@ class GreedyTagger:
                 score = np.log(e * q)
                 if score > best_prob:
                     best_label, best_prob = current_label, score
-            print "best prob for word ", word, " is ", best_prob
             predictions.append(best_label)
 
         return predictions[2:] #ignore the two start tags
@@ -48,7 +47,16 @@ class GreedyTagger:
 
 
 if __name__ == '__main__':
+    words_and_labels = DataManager.read_file("data/ass1-tagger-train", DataManager.parse_pos_reading)
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
-    words = "^^^^^ The bill , whose backers include Chairman".split(" ")
+    words_orig = "^^^^^ One/NN might/MD think/VB that/IN the/DT home/NN fans/NNS in/IN this/DT Series/NNP of/IN the/DT Subway/NNP Called/VBN BART/NNP (/( that/DT 's/VBZ a/DT better/JJR name/NN for/IN a/DT public/JJ conveyance/NN than/IN ``/`` Desire/NN ,/, ''/'' do/VBP n't/RB you/PRP think/VBP ?/. )/) would/MD have/VB been/VBN ecstatic/JJ over/IN the/DT proceedings/NNS ,/, but/CC they/PRP observe/VBP them/PRP in/IN relative/JJ calm/NN ./.Partisans/NNS of/IN the/DT two/CD combatants/NNS sat/VBD side/NN by/IN side/NN".split(" ")
+    words = [word.split("/")[0] for word in words_orig]
+
     gt = GreedyTagger( probability_provider)
-    print gt.predict_tags(words)
+    preds =  gt.predict_tags(words)
+    print len(words), len(preds)
+    s = ""
+    for i, word in enumerate(words[1:]):
+            s += word + "(" + preds[i] + ") "
+    print s
+    print " ".join(words_orig)

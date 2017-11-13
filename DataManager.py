@@ -236,6 +236,7 @@ class ProbabilityContainer:
     """
 
     def get_q_prob(self, y, t2, t1):
+        """returns the probability p(y|t1 t2) (last two tags seen are t1 then t2)"""
         p1, p2, p3 = 0, 0, self._q[y]
         one_backwards = y + " " + t2
         two_backwards = one_backwards + " " + t1
