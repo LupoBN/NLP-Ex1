@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     good, bad = 0., 0.
 
-    for i in range(50):
+    for i in range(200):
 
         words_orig = ("^^^^^/Start "+random.choice(lines) ).split(" ")
         words = [word.split("/")[0] for word in words_orig]
