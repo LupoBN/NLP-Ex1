@@ -38,7 +38,7 @@ class ViterbiTagger:
         #     V.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #     bp.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #
-        epsilon = 0.
+        epsilon = 1e-200
         V = epsilon * np.ones((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
@@ -49,7 +49,7 @@ class ViterbiTagger:
         bp[0][start_key][start_key] = start_key
         bp[1][start_key][start_key] = start_key
 
-        #V = np.log(V)
+        V = np.log(V)
         #print V>-1
         """ compute the prob. of a sequence of length i that ends with the labels t, r"""
         s=""
@@ -78,13 +78,12 @@ class ViterbiTagger:
                    for t_prime in prev_prev_possible_labels:
                        t_prime_index = self.labels_set.index(t_prime)
                        V_prev_t_t_prime = V[i-1][t_prime_index][t_index]
-                       #print "IT'S ", V_prev_t_t_prime
 
                        q = self.probs.get_q_prob(r, t, t_prime)
                        e = self.probs.get_e_prob(word, r)
 
-                       #score = np.log(q) + np.log(e) + V_prev_t_t_prime
-                       score = q * e * V_prev_t_t_prime
+                       #score = (np.log(q) + np.log(e)) + V_prev_t_t_prime
+                       score = np.log(q * e) + V_prev_t_t_prime
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
@@ -95,6 +94,7 @@ class ViterbiTagger:
         calcualte max on t, r of V[n-1]
         """
         V_last = V[-1]
+
         y_n_minus1, y_n = np.unravel_index(np.argmax(V_last),V_last.shape)
 
         y = [0]*n
