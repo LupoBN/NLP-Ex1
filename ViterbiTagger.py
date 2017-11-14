@@ -34,10 +34,10 @@ class ViterbiTagger:
         V, bp = [], []
         n = len(words)
         l = len(self.labels_set)
-        for i in range(n):
-            V.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
-            bp.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
-
+        # for i in range(n):
+        #     V.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
+        #     bp.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
+        #
         V = np.zeros((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
