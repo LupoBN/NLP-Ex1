@@ -111,7 +111,7 @@ def calculate_UNK_probs(words_and_labels):
 
 
 class ProbabilityContainer:
-    def __init__(self, e_file_name, q_file_name, lambda_one=0.8, lambda_two=0.15, lambda_three=0.05):
+    def __init__(self, e_file_name, q_file_name, lambda_one=0.5, lambda_two=0.4, lambda_three=0.1):
         labels_word_count = read_file(e_file_name, parse_count_reading)
         labels_count = read_file(q_file_name, parse_count_reading)
         self._q = dict()
@@ -218,13 +218,13 @@ class ProbabilityContainer:
             if key in self._e:
                 prob = self._e[key]
             else:
-                prob = 0.0001
+                prob = 0.00001 #TODO: maybe change the conditions?
         else:
             unk_label = "UNK " + label
             suffix_prob = self._suffixes_prob(word, label)
             prefix_prob = self._prefixes_prob(word, label)
             if unk_label in self._e:
-                prob = 0.7 * self._e["UNK " + label] + 0.15 * suffix_prob + 0.15 * prefix_prob
+                prob = 0.8 * self._e["UNK " + label] + 0.15 * suffix_prob + 0.05 * prefix_prob
             else:
                 if prob == 0:
                     return 1.0 / float(len(self._label_set))

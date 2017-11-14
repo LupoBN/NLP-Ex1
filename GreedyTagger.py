@@ -38,7 +38,7 @@ class GreedyTagger:
                 last_two = predictions[-2], predictions[-1]
                 e, q = self.probs.get_e_prob(word, current_label),\
                        self.probs.get_q_prob(current_label, last_two[-1], last_two[-2])
-                score = np.log(e * q)
+                score = np.log(e) + np.log(q)
                 if score > best_prob:
                     best_label, best_prob = current_label, score
             predictions.append(best_label)
@@ -59,9 +59,9 @@ if __name__ == '__main__':
 
     good, bad = 0., 0.
 
-    for i in range(250):
+    for i in range(len(lines)):
 
-        words_orig = ("^^^^^/Start " + random.choice(lines)).split(" ")
+        words_orig = ("^^^^^/Start " + lines[i]).split(" ")
         words = [word.split("/")[0] for word in words_orig]
         labels = [word.split("/")[1] for word in words_orig]
 

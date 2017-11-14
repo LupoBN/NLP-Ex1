@@ -38,7 +38,8 @@ class ViterbiTagger:
         #     V.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #     bp.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #
-        V = np.zeros((n, l, l))
+        epsilon = 0.
+        V = epsilon * np.ones((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
         start_key = self.labels_set.index("Start")
@@ -48,6 +49,8 @@ class ViterbiTagger:
         bp[0][start_key][start_key] = start_key
         bp[1][start_key][start_key] = start_key
 
+        #V = np.log(V)
+        #print V>-1
         """ compute the prob. of a sequence of length i that ends with the labels t, r"""
         s=""
         epsilon = 1e-8
@@ -58,28 +61,36 @@ class ViterbiTagger:
                 word_possible_labels = list(self.possible_labels[word])
             else:
                 word_possible_labels = self.labels_set
-            #print word, word_possible_labels
+
+            prev_word = words[i-1]
+            prev_possible_labels = list(self.possible_labels[prev_word]) if prev_word in self.possible_labels else self.labels_set
+            prev_prev_word = words[i-2] if i>=2 else "^^^^^"
+            prev_prev_possible_labels = list(self.possible_labels[prev_prev_word]) if prev_prev_word in self.possible_labels else self.labels_set
 
             #print "possible labels for word ", word ," are", word_possible_labels
-            for t in self.labels_set:
+            for t in prev_possible_labels:
                 t_index = self.labels_set.index(t)
 
                 for r in word_possible_labels:
                    r_index = self.labels_set.index(r)
                    max_val, max_t_prime = -float("inf"), None
 
-                   for t_prime in self.labels_set:
+                   for t_prime in prev_prev_possible_labels:
                        t_prime_index = self.labels_set.index(t_prime)
                        V_prev_t_t_prime = V[i-1][t_prime_index][t_index]
+                       #print "IT'S ", V_prev_t_t_prime
 
                        q = self.probs.get_q_prob(r, t, t_prime)
                        e = self.probs.get_e_prob(word, r)
 
-                       #score = np.log(q * e) +  V_prev_t_t_prime
+                       #score = np.log(q) + np.log(e) + V_prev_t_t_prime
+
+                       #print score
                        score = q * e * V_prev_t_t_prime
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
+                           #print "its ", max_t_prime
 
 
                    V[i][t_index][r_index] = max_val
@@ -114,7 +125,7 @@ gt = ViterbiTagger(labels_set, possible_labels)
 print gt.predict_tags(words)
 """
 if __name__ == '__main__':
-    words_and_labels = DataManager.read_file("data/ass1-tagger-train", DataManager.parse_pos_reading)
+    words_and_labels = DataManager.read_file("data/ass1-tagger-test", DataManager.parse_pos_reading)
     possible_labels = DataManager.parse_possible_labels(words_and_labels)
 
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
@@ -125,9 +136,9 @@ if __name__ == '__main__':
 
     good, bad = 0., 0.
 
-    for i in range(200):
+    for i in range(len(lines)):
 
-        words_orig = ("^^^^^/Start "+random.choice(lines) ).split(" ")
+        words_orig = ("^^^^^/Start "+lines[i] ).split(" ")
         words = [word.split("/")[0] for word in words_orig]
         labels =  [word.split("/")[1] for word in words_orig]
 
@@ -136,7 +147,6 @@ if __name__ == '__main__':
         print time.time() - start
 
         s = ""
-        print labels[1:]
         for i, word in enumerate(words[1:]):
             s+=word+ "("+preds[i]+") "
             if preds[i] == labels[i+1]:
