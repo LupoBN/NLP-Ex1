@@ -4,25 +4,13 @@ import numpy as np
 import math
 import time
 
-class DummyProbsProvider():
-    def __init__(self):
-        pass
-
-    def get_q(self, y, t1, t2):
-        """simulates the conditional probability q(y|t1t2)"""
-        return random.random()
-
-    def get_e(self, x, y):
-        """simulates the conditional probability of a word x given a pos y"""
-        return random.random()
-
 
 class ViterbiTagger:
     def __init__(self, probs_provider, possible_labels):
         self.labels_set = list(probs_provider.get_label_set())
         self.possible_labels  = possible_labels
         self.probs = probs_provider
-        #self.labels_set = ["Start", "DT", "NN"]
+
     def predict_tags(self, words):
         """
 
@@ -38,8 +26,7 @@ class ViterbiTagger:
         #     V.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #     bp.append([[0. for j in range(len(self.labels_set))] for k in range(len(self.labels_set))])
         #
-        epsilon = 1e-200
-        V = epsilon * np.ones((n, l, l))
+        V = np.zeros((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
         start_key = self.labels_set.index("Start")
@@ -49,14 +36,12 @@ class ViterbiTagger:
         bp[0][start_key][start_key] = start_key
         bp[1][start_key][start_key] = start_key
 
-        V = np.log(V)
-        #print V>-1
+        V = np.where(V>1e-10, np.log(V), -np.inf)
+
         """ compute the prob. of a sequence of length i that ends with the labels t, r"""
-        s=""
-        epsilon = 1e-8
+
         for i in range(1, n): #skip two first start symbols.
             word = words[i]
-
 
             word_possible_labels = list(self.possible_labels[word]) if word in self.possible_labels else self.labels_set
             prev_word = words[i-1]
@@ -64,7 +49,6 @@ class ViterbiTagger:
             prev_prev_word = words[i-2] if i>=2 else "^^^^^"
             prev_prev_possible_labels = list(self.possible_labels[prev_prev_word]) if prev_prev_word in self.possible_labels else self.labels_set
 
-            #print "possible labels for word ", word ," are", word_possible_labels
             for t in prev_possible_labels:
                 t_index = self.labels_set.index(t)
 
@@ -79,8 +63,7 @@ class ViterbiTagger:
                        q = self.probs.get_q_prob(r, t, t_prime)
                        e = self.probs.get_e_prob(word, r)
 
-                       #score = (np.log(q) + np.log(e)) + V_prev_t_t_prime
-                       score = np.log(q * e) + V_prev_t_t_prime
+                       score = np.log(q) + np.log(e) + V_prev_t_t_prime
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
@@ -91,7 +74,6 @@ class ViterbiTagger:
         calcualte max on t, r of V[n-1]
         """
         V_last = V[-1]
-
         y_n_minus1, y_n = np.unravel_index(np.argmax(V_last),V_last.shape)
 
         y = [0]*n
@@ -148,8 +130,6 @@ if __name__ == '__main__':
             if preds[i] == labels[i+1]:
                 good += 1
             else:
-                if preds[i]==".":
-                    point_error+=1
                 print "ERROR: predicted ", preds[i], " for word ", word, " while true label is ", labels[i+1], ". prev word is ", words[i-1]
                 bad += 1
         print s
