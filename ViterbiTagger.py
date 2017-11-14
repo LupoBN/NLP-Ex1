@@ -57,11 +57,8 @@ class ViterbiTagger:
         for i in range(1, n): #skip two first start symbols.
             word = words[i]
 
-            if word in self.possible_labels:
-                word_possible_labels = list(self.possible_labels[word])
-            else:
-                word_possible_labels = self.labels_set
 
+            word_possible_labels = list(self.possible_labels[word]) if word in self.possible_labels else self.labels_set
             prev_word = words[i-1]
             prev_possible_labels = list(self.possible_labels[prev_word]) if prev_word in self.possible_labels else self.labels_set
             prev_prev_word = words[i-2] if i>=2 else "^^^^^"
