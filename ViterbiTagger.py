@@ -57,6 +57,7 @@ class ViterbiTagger:
                    max_val, max_t_prime = -float("inf"), None
 
                    for t_prime in prev_prev_possible_labels:
+
                        t_prime_index = self.labels_set.index(t_prime)
                        V_prev_t_t_prime = V[i-1][t_prime_index][t_index]
 
@@ -64,6 +65,7 @@ class ViterbiTagger:
                        e = self.probs.get_e_prob(word, r)
 
                        score = np.log(q) + np.log(e) + V_prev_t_t_prime
+
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
@@ -116,13 +118,11 @@ if __name__ == '__main__':
     for i in range(len(lines)):
 
         words_orig = ("^^^^^/Start "+lines[i] ).split(" ")
-        print words_orig
+        #print words_orig
         words = [word.split("/")[0] for word in words_orig]
         labels =  [word.split("/")[1].strip("\n") for word in words_orig]
 
-        start = time.time()
         preds =  vt.predict_tags(words)
-        print time.time() - start
 
         s = ""
         for i, word in enumerate(words[1:]):
@@ -130,7 +130,7 @@ if __name__ == '__main__':
             if preds[i] == labels[i+1]:
                 good += 1
             else:
-                print "ERROR: predicted ", preds[i], " for word ", word, " while true label is ", labels[i+1], ". prev word is ", words[i-1]
+                #print "ERROR: predicted ", preds[i], " for word ", word, " while true label is ", labels[i+1], ". prev word is ", words[i-1]
                 bad += 1
         print s
         print words_orig[1:]
