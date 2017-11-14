@@ -36,7 +36,7 @@ class ViterbiTagger:
         bp[0][start_key][start_key] = start_key
         bp[1][start_key][start_key] = start_key
 
-        V = np.where(V>1e-10, np.log(V), -np.inf)
+        V = np.where(V>1e-9, np.log(V), -np.inf)
 
         """ compute the prob. of a sequence of length i that ends with the labels t, r"""
 
@@ -54,7 +54,7 @@ class ViterbiTagger:
 
                 for r in word_possible_labels:
                    r_index = self.labels_set.index(r)
-                   max_val, max_t_prime = -float("inf"), None
+                   max_val, max_t_prime = -np.inf, None
 
                    for t_prime in prev_prev_possible_labels:
 
@@ -103,7 +103,7 @@ print gt.predict_tags(words)
 """
 
 if __name__ == '__main__':
-    words_and_labels = DataManager.read_file("data/ass1-tagger-test", DataManager.parse_pos_reading)
+    words_and_labels = DataManager.read_file("data/ass1-tagger-train", DataManager.parse_pos_reading)
     possible_labels = DataManager.parse_possible_labels(words_and_labels)
 
     probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
@@ -113,7 +113,6 @@ if __name__ == '__main__':
     vt = ViterbiTagger(probability_provider, possible_labels)
 
     good, bad = 0., 0.
-    point_error = 0.
 
     for i in range(len(lines)):
 

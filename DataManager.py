@@ -1,7 +1,15 @@
 import numpy as np
 
-SUFFIXES = ["ing", "ed", "s"]
-PREFIXES = ["un", "de", "re"]
+SUFFIXES = ["ing", "ed", "s", "er", "est", "dom", "ism", "ist", "al", "ity", "ment", "ness", "tion",
+            "ship", "ate", "en", "ify", "fy", "sion", "ize", "able", "ful", "ish", "less", "ive"]
+PREFIXES = ["un", "de", "re", "in", "anti", "auto", "Auto", "Anti", "Un", "De", "Re", "In", "im", "Im", "Pre", "pre", "extra", "Extra", "over", "Over"]
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 def parse_pos_reading(lines):
     content = [["^^^^^/Start"] + line.split(" ")[0:-1] for line in lines]
@@ -111,7 +119,7 @@ def calculate_UNK_probs(words_and_labels):
 
 
 class ProbabilityContainer:
-    def __init__(self, e_file_name, q_file_name, lambda_one=0.5, lambda_two=0.4, lambda_three=0.1):
+    def __init__(self, e_file_name, q_file_name, lambda_one=0.8, lambda_two=0.15, lambda_three=0.05):
         labels_word_count = read_file(e_file_name, parse_count_reading)
         labels_count = read_file(q_file_name, parse_count_reading)
         self._q = dict()
@@ -163,6 +171,7 @@ class ProbabilityContainer:
                     unk_sig_dict[begin_pair] = pairs_count[word_label]
                 else:
                     unk_sig_dict[begin_pair] += pairs_count[word_label]
+        #print unk_sig_dict
         pairs_count.update(unk_sig_dict)
 
     # Gets a dictionary of label keys and maps them to their count.
@@ -193,6 +202,7 @@ class ProbabilityContainer:
             self._e[key] = float(unk_values[key]) / float(UNK_sum_values)
 
     def _suffixes_prob(self, word, label):
+
         prob = 0
         for suffix in SUFFIXES:
             if word.endswith(suffix):
@@ -212,23 +222,28 @@ class ProbabilityContainer:
 
     # Gets a word and a label and returns the LOG e probability for that word given that label.
     def get_e_prob(self, word, label):
+
         prob = 0
         key = word + " " + label
-        epsilon = 1e-10
+        epsilon = 1e-8
         if word in self._word_count and self._word_count[word] > 2:
             if key in self._e:
                 prob = self._e[key]
             else:
-                prob =  epsilon# 1.0 / float(len(self._label_set)) #TODO: maybe change the conditions?
+                prob =  epsilon # 1.0 / float(len(self._label_set)) #TODO: maybe change the conditions?
         else:
             unk_label = "UNK " + label
+
+            if label == "CD" and is_number(word): return 1.
             suffix_prob = self._suffixes_prob(word, label)
             prefix_prob = self._prefixes_prob(word, label)
+
             if unk_label in self._e:
-                prob = 0.8 * self._e["UNK " + label] + 0.15 * suffix_prob + 0.05 * prefix_prob
+                prob = 0.1 * self._e["UNK " + label] + 0.4 * suffix_prob + 0.4 * prefix_prob
             else:
                 if prob == 0:
-                    return 1.0 / float(len(self._label_set))
+                    # guess a label randomely in a uniform manner
+                    return epsilon #1.0 / float(len(self._label_set))
         return prob
 
     """"
