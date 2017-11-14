@@ -137,8 +137,9 @@ if __name__ == '__main__':
     for i in range(len(lines)):
 
         words_orig = ("^^^^^/Start "+lines[i] ).split(" ")
+        print words_orig
         words = [word.split("/")[0] for word in words_orig]
-        labels =  [word.split("/")[1] for word in words_orig]
+        labels =  [word.split("/")[1].strip("\n") for word in words_orig]
 
         start = time.time()
         preds =  vt.predict_tags(words)
@@ -157,4 +158,3 @@ if __name__ == '__main__':
         print s
         print words_orig[1:]
         print "accuracy: ", (good)/(good+bad)
-        print "point error: ", point_error, " totatl errors: ", bad
