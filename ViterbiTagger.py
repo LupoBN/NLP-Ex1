@@ -84,14 +84,10 @@ class ViterbiTagger:
                        e = self.probs.get_e_prob(word, r)
 
                        #score = np.log(q) + np.log(e) + V_prev_t_t_prime
-
-                       #print score
                        score = q * e * V_prev_t_t_prime
                        if score > max_val:
                            max_val = score
                            max_t_prime = t_prime_index
-                           #print "its ", max_t_prime
-
 
                    V[i][t_index][r_index] = max_val
                    bp[i][t_index][r_index] = max_t_prime
@@ -124,6 +120,7 @@ for line in f.readlines():
 gt = ViterbiTagger(labels_set, possible_labels)
 print gt.predict_tags(words)
 """
+
 if __name__ == '__main__':
     words_and_labels = DataManager.read_file("data/ass1-tagger-test", DataManager.parse_pos_reading)
     possible_labels = DataManager.parse_possible_labels(words_and_labels)
@@ -135,6 +132,7 @@ if __name__ == '__main__':
     vt = ViterbiTagger(probability_provider, possible_labels)
 
     good, bad = 0., 0.
+    point_error = 0.
 
     for i in range(len(lines)):
 
@@ -152,7 +150,11 @@ if __name__ == '__main__':
             if preds[i] == labels[i+1]:
                 good += 1
             else:
+                if preds[i]==".":
+                    point_error+=1
+                print "ERROR: predicted ", preds[i], " for word ", word, " while true label is ", labels[i+1], ". prev word is ", words[i-1]
                 bad += 1
         print s
         print words_orig[1:]
         print "accuracy: ", (good)/(good+bad)
+        print "point error: ", point_error, " totatl errors: ", bad
