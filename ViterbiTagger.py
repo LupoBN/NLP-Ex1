@@ -40,7 +40,7 @@ class ViterbiTagger:
 
         """ compute the prob. of a sequence of length i that ends with the labels t, r"""
 
-        for i in range(1, n): #skip two first start symbols.
+        for i in range(1, n): #skip the start symbol.
             word = words[i]
 
             word_possible_labels = list(self.possible_labels[word]) if word in self.possible_labels else self.labels_set
@@ -64,7 +64,7 @@ class ViterbiTagger:
                        q = self.probs.get_q_prob(r, t, t_prime)
                        e = self.probs.get_e_prob(word, r)
 
-                       score = np.log(q) + np.log(e) + V_prev_t_t_prime
+                       score = np.where(q>0, np.log(q), -np.inf) + np.where(e>0, np.log(e), -np.inf) + V_prev_t_t_prime
 
                        if score > max_val:
                            max_val = score

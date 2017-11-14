@@ -214,11 +214,12 @@ class ProbabilityContainer:
     def get_e_prob(self, word, label):
         prob = 0
         key = word + " " + label
+        epsilon = 1e-10
         if word in self._word_count and self._word_count[word] > 2:
             if key in self._e:
                 prob = self._e[key]
             else:
-                prob = 0.00001 #TODO: maybe change the conditions?
+                prob =  epsilon# 1.0 / float(len(self._label_set)) #TODO: maybe change the conditions?
         else:
             unk_label = "UNK " + label
             suffix_prob = self._suffixes_prob(word, label)
