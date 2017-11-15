@@ -18,7 +18,7 @@ class FeatureExtractor():
         self.words_and_labels = words_and_labels
         self.labels_set = labels_set
 
-    def _create_features(self, word, label, p, pp, n, nn):
+    def create_features(self, word, p, pp, n, nn):
         """
 
         :param word: current word
@@ -35,47 +35,50 @@ class FeatureExtractor():
         pw, ppw = p[0], pp[0]
         #nt, nnt = n[1], nn[1]
         nw, nnw = n[0], nn[0]
+        s = ""
 
-        s = "label="+label+" "
         if word in self.common_words:
-            s+="form="+word+" "
+
+            s += "form="+word+" "
+
         else:
-            s+=self._create_prefix_features(word, label)
-            s+=self._create_suffix_features(word, label)
-            s+=self.create_inner_chars_features(word, label)
-        s+="pt="+pt+" "
-        s+="ppt_pt="+ppt+"_"+"pt"+" "
-        s+="pw="+pw+" "
-        s+="ppw="+ppw+" "
-        s+="nw="+nw+" "
-        s+="nnw="+nnw+" "
+            s+=self._create_prefix_features(word)
+            s+=self._create_suffix_features(word)
+            s+=self.create_inner_chars_features(word)
+
+        s += "pt="+pt+" "
+        s += "ppt_pt="+ppt+"_"+pt+" "
+        s += "pw="+pw+" "
+        s += "ppw="+ppw+" "
+        s += "nw="+nw+" "
+        s += "nnw="+nnw+" "
         return s
 
 
 
-    def _create_prefix_features(self, word, label):
+    def _create_prefix_features(self, word):
        s=""
        for i in range(1, min(5,len(word))):
            pref = word[:i]
            s+="pref="+pref+" "
        return s
 
-    def _create_suffix_features(self, word, label):
+    def _create_suffix_features(self, word):
        s=""
        for i in range(1, min(5,len(word))):
            suffix = word[-i:]
-           s+="suf="+suffix+" "
+           s += "suf=" + suffix + " "
        if len(s) > 0: s += " "
        return s
 
-    def create_inner_chars_features(self, word, label):
+    def create_inner_chars_features(self, word):
         s = ""
         if contains_number(word):
-            s+="number=True "
+            s += "number=True "
         if word[0].isupper():
-            s+="upper=True "
+            s += "upper=True "
         if "-" in word:
-            s+="hyphen=True "
+            s += "hyphen=True "
         if len(s) > 0: s+=" "
         return s
 
@@ -86,12 +89,15 @@ class FeatureExtractor():
         l = len(self.words_and_labels)
         for i, (word, label) in enumerate(self.words_and_labels):
             if i < 2 or i > l-3: continue
+            s+=label + " "
             p, pp = self.words_and_labels[i-1], self.words_and_labels[i-2]
             n, nn = self.words_and_labels[i+1], self.words_and_labels[i+2]
-            s+=self._create_features(word, label, p, pp, n, nn)
+            s+=self.create_features(word, p, pp, n, nn)
             s+="\n"
-        #print s
+
         features = set(s.strip("\n").split(" "))
+        features = set(filter(lambda word: "=" in word, features)) #filter out the gold labels
+
         print ("size is ", sys.getsizeof(features) / 1e6, " mb")
 
         f = open(results_filename, "w")
@@ -99,7 +105,7 @@ class FeatureExtractor():
         f.close()
 
         l = list(features)
-        for i in l[:1000]:
+        for i in l[:100]:
             print i
 
         return features
