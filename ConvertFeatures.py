@@ -21,7 +21,10 @@ class FeaturesConverter():
                     val = self.features2numbers[word]
                     s += str(val) + ":1 "
             s+="\n"
-        print s
+
+        f = open("feature_vecs_file", "w")
+        f.write(s)
+        f.close()
 
 
 
