@@ -36,12 +36,13 @@ class FeatureExtractor():
         #nt, nnt = n[1], nn[1]
         nw, nnw = n[0], nn[0]
 
-        s = ""
+        s = "label="+label+" "
         if word in self.common_words:
             s+="form="+word+" "
         else:
             s+=self._create_prefix_features(word, label)
             s+=self._create_suffix_features(word, label)
+            s+=self.create_inner_chars_features(word, label)
         s+="pt="+pt+" "
         s+="ppt_pt="+ppt+"_"+"pt"+" "
         s+="pw="+pw+" "
@@ -96,6 +97,11 @@ class FeatureExtractor():
         f = open(results_filename, "w")
         f.write(s)
         f.close()
+
+        l = list(features)
+        for i in l[:1000]:
+            print i
+
         return features
 
 
