@@ -64,7 +64,6 @@ class FeatureExtractor():
        for i in range(1, min(5,len(word))):
            suffix = word[-i:]
            s += "suf=" + suffix + " "
-       if len(s) > 0: s += " "
        return s
 
     def create_inner_chars_features(self, word):
@@ -91,7 +90,7 @@ class FeatureExtractor():
             s+=self.create_features(word, p, pp, nw, nnw)
             s+="\n"
 
-        features = set(s.strip("\n").split(" "))
+        features = set(s.replace("\n", "").split(" "))
         features = set(filter(lambda word: "=" in word, features)) #filter out the gold labels
 
         print ("size is ", sys.getsizeof(features) / 1e6, " mb")

@@ -1,3 +1,6 @@
+import DataManager
+import ExtractFeatures
+import ConvertFeatures
 
 class Trainer():
 
@@ -6,4 +9,5 @@ class Trainer():
 
 
 if __name__ == '__main__':
- pass
+ f = open("train_features", "r")
+ lines = f.readlines()
