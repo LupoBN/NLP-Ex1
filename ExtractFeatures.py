@@ -18,23 +18,19 @@ class FeatureExtractor():
         self.words_and_labels = words_and_labels
         self.labels_set = labels_set
 
-    def create_features(self, word, p, pp, n, nn):
+    def create_features(self, word, p, pp, nw, nnw):
         """
 
         :param word: current word
         :param label: current label
         :param p: prev (word, label) tuple
         :param pp: prev prev (word, label) tuple
-        :param n: next (word, label) tuple
-        :param nn: next next (word, label) tuple
         :return:
         """
 
 
         pt, ppt = p[1], pp[1]
         pw, ppw = p[0], pp[0]
-        #nt, nnt = n[1], nn[1]
-        nw, nnw = n[0], nn[0]
         s = ""
 
         if word in self.common_words:
@@ -91,8 +87,8 @@ class FeatureExtractor():
             if i < 2 or i > l-3: continue
             s+=label + " "
             p, pp = self.words_and_labels[i-1], self.words_and_labels[i-2]
-            n, nn = self.words_and_labels[i+1], self.words_and_labels[i+2]
-            s+=self.create_features(word, p, pp, n, nn)
+            nw, nnw = self.words_and_labels[i+1][0], self.words_and_labels[i+2][0]
+            s+=self.create_features(word, p, pp, nw, nnw)
             s+="\n"
 
         features = set(s.strip("\n").split(" "))
