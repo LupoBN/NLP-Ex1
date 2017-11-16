@@ -22,8 +22,18 @@ class FeaturesConverter():
                     s += str(val) + ":1 "
             s+="\n"
 
+        lines = s.split("\n")
+        for i, line in enumerate(lines):
+            splitted = line.split(" ")
+            label, rest = splitted[0], splitted[1:]
+            if "" in rest: rest.remove("")
+            rest = sorted(rest, key = lambda pair: int(pair[:pair.index(":")]))
+            lines[i] = " ".join([label] + rest)+"\n"
+            #print lines[i]
+
+        q = "".join(lines)
         f = open("feature_vecs_file", "w")
-        f.write(s)
+        f.write(q)
         f.close()
 
 
