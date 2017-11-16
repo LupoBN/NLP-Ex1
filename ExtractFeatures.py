@@ -47,7 +47,7 @@ class FeatureExtractor():
         s += "pw="+pw+" "
         s += "ppw="+ppw+" "
         s += "nw="+nw+" "
-        s += "nnw="+nnw+" "
+        s += "nnw="+nnw
         return s
 
 
@@ -74,7 +74,7 @@ class FeatureExtractor():
             s += "upper=True "
         if "-" in word:
             s += "hyphen=True "
-        if len(s) > 0: s+=" "
+        #if len(s) > 0: s+=" "
         return s
 
 
@@ -88,9 +88,10 @@ class FeatureExtractor():
             p, pp = self.words_and_labels[i-1], self.words_and_labels[i-2]
             nw, nnw = self.words_and_labels[i+1][0], self.words_and_labels[i+2][0]
             s+=self.create_features(word, p, pp, nw, nnw)
+            #s = s.strip()
             s+="\n"
 
-        features = set(s.replace("\n", "").split(" "))
+        features = set(s.replace("\n", " ").split(" "))
         features = set(filter(lambda word: "=" in word, features)) #filter out the gold labels
 
         print ("size is ", sys.getsizeof(features) / 1e6, " mb")
