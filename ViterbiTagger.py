@@ -1,9 +1,7 @@
-import random
 import DataManager
 import numpy as np
-import math
-import time
-
+import sys
+from Helpers import test_model
 
 class ViterbiTagger:
     def __init__(self, probs_provider, possible_labels):
@@ -61,10 +59,7 @@ class ViterbiTagger:
                        t_prime_index = self.labels_set.index(t_prime)
                        V_prev_t_t_prime = V[i-1][t_prime_index][t_index]
 
-                       q = self.probs.get_q_prob(r, t, t_prime)
-                       e = self.probs.get_e_prob(word, r)
-
-                       score = np.where(q>0, np.log(q), -np.inf) + np.where(e>0, np.log(e), -np.inf) + V_prev_t_t_prime
+                       score = self.probs.get_score(word, r, t, t_prime,) + V_prev_t_t_prime
 
                        if score > max_val:
                            max_val = score
@@ -106,31 +101,9 @@ if __name__ == '__main__':
     words_and_labels = DataManager.read_file("data/ass1-tagger-train", DataManager.parse_pos_reading)
     possible_labels = DataManager.parse_possible_labels(words_and_labels)
 
-    probability_provider = DataManager.ProbabilityContainer("e.mle", "q.mle" )
-    #words_orig = "^^^^^ One/NN might/MD think/VB that/IN the/DT home/NN fans/NNS in/IN this/DT Series/NNP of/IN the/DT Subway/NNP Called/VBN BART/NNP (/( that/DT 's/VBZ a/DT better/JJR name/NN for/IN a/DT public/JJ conveyance/NN than/IN ``/`` Desire/NN ,/, ''/'' do/VBP n't/RB you/PRP think/VBP ?/. )/) would/MD have/VB been/VBN ecstatic/JJ over/IN the/DT proceedings/NNS ,/, but/CC they/PRP observe/VBP them/PRP in/IN relative/JJ calm/NN ./.Partisans/NNS of/IN the/DT two/CD combatants/NNS sat/VBD side/NN by/IN side/NN".split(" ")
-    f = open("data/ass1-tagger-test")
-    lines = f.readlines()
+    probability_provider = DataManager.ProbabilityContainer(sys.argv[3], sys.argv[2])
+
     vt = ViterbiTagger(probability_provider, possible_labels)
+    print test_model(sys.argv[1], vt)
 
-    good, bad = 0., 0.
 
-    for i in range(len(lines)):
-
-        words_orig = ("^^^^^/Start "+lines[i] ).split(" ")
-        #print words_orig
-        words = [word.split("/")[0] for word in words_orig]
-        labels =  [word.split("/")[1].strip("\n") for word in words_orig]
-
-        preds =  vt.predict_tags(words)
-
-        s = ""
-        for i, word in enumerate(words[1:]):
-            s+=word+ "("+preds[i]+") "
-            if preds[i] == labels[i+1]:
-                good += 1
-            else:
-                #print "ERROR: predicted ", preds[i], " for word ", word, " while true label is ", labels[i+1], ". prev word is ", words[i-1]
-                bad += 1
-        print s
-        print words_orig[1:]
-        print "accuracy: ", (good)/(good+bad)
