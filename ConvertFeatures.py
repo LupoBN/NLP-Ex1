@@ -1,3 +1,4 @@
+import Input2vec
 
 class FeaturesConverter():
     def __init__(self, features_set, labels_set, features2numbers, labels2numbers):
@@ -8,7 +9,6 @@ class FeaturesConverter():
 
 
     def convert(self, lines):
-        "feature_vecs_file"
 
         s = ""
         for j, line in enumerate(lines):
@@ -26,7 +26,7 @@ class FeaturesConverter():
             s+="\n"
 
         lines = s.strip().split("\n")
-        print "last is :" ,lines[-1]
+        #print "last is :" ,lines[-1]
         for i, line in enumerate(lines):
             splitted = line.strip().split(" ")
             label, rest = splitted[0], splitted[1:]
@@ -59,5 +59,6 @@ if __name__ == '__main__':
 
  fc = FeaturesConverter(features_set, labels_set, features2numbers, labels2numbers)
  fc.convert(lines)
- print numbers2labels
+
+
 
