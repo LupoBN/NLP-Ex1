@@ -44,7 +44,7 @@ if __name__ == '__main__':
     word = "are"
     p = ["how", "DT"]
     pp = ["hello", "JJ"]
-    nw = "you"
+    nw = "you" #NOTE: if there is not next word, i.e. it's the end of the sentence, set nw, nnw=""
     nnw = "?"
     inp2vec = Input2vec("feature_map_file")
     print inp2vec.create_vector(word, p, pp, nw, nnw)

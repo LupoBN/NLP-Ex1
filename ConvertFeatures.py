@@ -57,6 +57,8 @@ if __name__ == '__main__':
      f.write(str(key)+"\t"+str(val)+"\n")
  f.close()
 
+
+
  fc = FeaturesConverter(features_set, labels_set, features2numbers, labels2numbers)
  fc.convert(lines)
 
