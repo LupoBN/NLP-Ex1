@@ -59,7 +59,7 @@ class ViterbiTagger:
                        t_prime_index = self.labels_set.index(t_prime)
                        V_prev_t_t_prime = V[i-1][t_prime_index][t_index]
 
-                       score = self.probs.get_score(word, r, t, t_prime,) + V_prev_t_t_prime
+                       score = self.probs.get_score(word, r, t, t_prime) + V_prev_t_t_prime
 
                        if score > max_val:
                            max_val = score

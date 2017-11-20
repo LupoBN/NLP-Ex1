@@ -28,4 +28,5 @@ if __name__ == '__main__':
     x_train, y_train = load_svmlight_file(sys.argv[1])
     trainer = LogLinearModel()
     trainer.train_model(x_train, y_train)
+    trainer.save_model("model")
     pass

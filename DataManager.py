@@ -1,8 +1,11 @@
 import numpy as np
 from Helpers import *
+
 SUFFIXES = ["ing", "ed", "s", "er", "est", "dom", "ism", "ist", "al", "ity", "ment", "ness", "tion",
             "ship", "ate", "en", "ify", "fy", "sion", "ize", "able", "ful", "ish", "less", "ive"]
-PREFIXES = ["un", "de", "re", "in", "anti", "auto", "Auto", "Anti", "Un", "De", "Re", "In", "im", "Im", "Pre", "pre", "extra", "Extra", "over", "Over"]
+PREFIXES = ["un", "de", "re", "in", "anti", "auto", "Auto", "Anti", "Un", "De", "Re", "In", "im", "Im", "Pre", "pre",
+            "extra", "Extra", "over", "Over"]
+
 
 def count_labels(labels, order):
     labels_count = dict()
@@ -105,7 +108,7 @@ class ProbabilityContainer:
                     unk_sig_dict[begin_pair] = pairs_count[word_label]
                 else:
                     unk_sig_dict[begin_pair] += pairs_count[word_label]
-        #print unk_sig_dict
+        # print unk_sig_dict
         pairs_count.update(unk_sig_dict)
 
     # Gets a dictionary of label keys and maps them to their count.
@@ -164,7 +167,7 @@ class ProbabilityContainer:
             if key in self._e:
                 prob = self._e[key]
             else:
-                prob =  epsilon # 1.0 / float(len(self._label_set)) #TODO: maybe change the conditions?
+                prob = epsilon  # 1.0 / float(len(self._label_set)) #TODO: maybe change the conditions?
         else:
             unk_label = "UNK " + label
 
@@ -177,7 +180,7 @@ class ProbabilityContainer:
             else:
                 if prob == 0:
                     # guess a label randomely in a uniform manner
-                    return epsilon #1.0 / float(len(self._label_set))
+                    return epsilon  # 1.0 / float(len(self._label_set))
         return prob
 
     def get_score(self, word, tag, tag_prev, tag_prev_prev):
@@ -186,6 +189,15 @@ class ProbabilityContainer:
 
         score = np.where(q > 0, np.log(q), -np.inf) + np.where(e > 0, np.log(e), -np.inf)
         return score
+
+    def get_probabilities(self, words, tag_prev, tag_prev_prev):
+        probabilities = dict()
+        for tag in self._label_set:
+            q = self.get_q_prob(tag, tag_prev, tag_prev_prev)
+            e = self.get_e_prob(words[0], tag)
+            score = np.where(q > 0, np.log(q), -np.inf) + np.where(e > 0, np.log(e), -np.inf)
+            probabilities[tag] = score
+        return probabilities
 
     """"
     Gets a label and returns the LOG q probability for that label (according to the conditional
