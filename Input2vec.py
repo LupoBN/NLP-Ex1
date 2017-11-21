@@ -11,7 +11,9 @@ class Input2vec():
         self.create_mapping()
         self.creator = FeatureCreator.FeatureCreator()
         self._vec = DictVectorizer(sparse=True)
+
         self._vec.fit_transform(self.map)
+        print "map size is ", len(self.map)
 
     def ind_to_tag(self, index):
         return self._I2T[str(index)]
@@ -39,7 +41,9 @@ class Input2vec():
         :return:
         """
         vector = self.creator.create_features(word, p, pp, nw, nnw, True, True)
-        features = vector.split(" ")
+        print vector
+        features = vector.strip().split(" ")
+        print len(features)
         feature_vec = dict()
         for f in features:
             feature_vec[f] = 1
@@ -57,4 +61,5 @@ if __name__ == '__main__':
     nw = "you"  # NOTE: if there is no next word, i.e. it's the end of the sentence, set nw, nnw=""
     nnw = "?"
     inp2vec = Input2vec("feature_map_file")
-    print inp2vec.create_vector(word, p, pp, nw, nnw)
+    r =  inp2vec.create_vector(word, p, pp, nw, nnw)
+    print r.size
