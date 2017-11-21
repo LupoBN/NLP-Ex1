@@ -45,7 +45,7 @@ if __name__ == '__main__':
  f = open("train_features")
  lines = f.readlines()
  labels_set = set([line.split(" ")[0] for line in lines])
- features_set = set(  ("".join(lines)).replace("\n", " ").split(" ")   )
+ features_set = set(  ("".join(lines)).replace("\n", " ").strip().split(" ")   )
 
  features2numbers = {f:i for i,f in enumerate(sorted(features_set))}
  numbers2features = {i:f for i, f in enumerate(sorted(features_set))}
