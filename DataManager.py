@@ -183,9 +183,9 @@ class ProbabilityContainer:
                     return epsilon  # 1.0 / float(len(self._label_set))
         return prob
 
-    def get_score(self, word, tag, tag_prev, tag_prev_prev):
+    def get_score(self, words, tag, tag_prev, tag_prev_prev):
         q = self.get_q_prob(tag, tag_prev, tag_prev_prev)
-        e = self.get_e_prob(word, tag)
+        e = self.get_e_prob(words[0], tag)
 
         score = np.where(q > 0, np.log(q), -np.inf) + np.where(e > 0, np.log(e), -np.inf)
         return score
@@ -195,7 +195,7 @@ class ProbabilityContainer:
         for tag in self._label_set:
             q = self.get_q_prob(tag, tag_prev, tag_prev_prev)
             e = self.get_e_prob(words[0], tag)
-            score = np.where(q > 0, np.log(q), -np.inf) + np.where(e > 0, np.log(e), -np.inf)
+            score = q * e
             probabilities[tag] = score
         return probabilities
 
@@ -221,5 +221,5 @@ class ProbabilityContainer:
                 p3 = self._q[two_backwards]
 
         prob = self._lambda_one * p1 + self._lambda_two * p2 + self._lambda_three * p3
-        assert prob >= 0 and prob <= 1
+        #assert prob >= 0 and prob <= 1
         return prob

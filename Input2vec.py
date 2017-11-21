@@ -1,21 +1,34 @@
 import FeatureCreator
+from sklearn.feature_extraction import DictVectorizer
+import time
 
 
 class Input2vec():
     def __init__(self, feature_map_filename):
         self.feature_map = open(feature_map_filename, "r")
         self.map = {}
+        self._I2T = {}
         self.create_mapping()
         self.creator = FeatureCreator.FeatureCreator()
+        self._vec = DictVectorizer(sparse=True)
+        self._vec.fit_transform(self.map)
+
+    def ind_to_tag(self, index):
+        return self._I2T[str(index)]
+
+    def get_labels_set(self):
+        return set(self._I2T.values())
 
     def create_mapping(self):
         lines = self.feature_map.readlines()
         for line in lines:
-            line = line.replace("\n","")
+            line = line.replace("\n", "")
             key, value = line.split("\t")
-            self.map[key] = value
+            if "=" not in key:
+                self._I2T[value] = key
+            self.map[key] = int(value)
 
-    def create_vector(self,  word, p, pp, nw, nnw):
+    def create_vector(self, word, p, pp, nw, nnw):
         """
 
         :param word: current word
@@ -25,26 +38,23 @@ class Input2vec():
         :param nnw:next next word
         :return:
         """
-        features_vector = ""
-        vector = self.creator.create_features( word, p, pp, nw, nnw, True, True)
+        vector = self.creator.create_features(word, p, pp, nw, nnw, True, True)
         features = vector.split(" ")
+        feature_vec = dict()
         for f in features:
-            if f in self.map:
-                encoded_feature = self.map[f]
-                features_vector+=str(encoded_feature)+":1 "
+            feature_vec[f] = 1
+        x = self._vec.transform(feature_vec)
 
-        features_vector = features_vector.strip().split(" ")
-        sorted_vector = sorted(features_vector, key = lambda pair: int(pair[:pair.index(":")]))
-        rtrn_val = " ".join(sorted_vector)
-        return " ".join(sorted_vector)
-
+        # sorted_vector = sorted(features_vector, key = lambda pair: int(pair[:pair.index(":")]))
+        # rtrn_val = " ".join(sorted_vector)
+        return x
 
 
 if __name__ == '__main__':
     word = "are"
     p = ["how", "DT"]
     pp = ["hello", "JJ"]
-    nw = "you" #NOTE: if there is no next word, i.e. it's the end of the sentence, set nw, nnw=""
+    nw = "you"  # NOTE: if there is no next word, i.e. it's the end of the sentence, set nw, nnw=""
     nnw = "?"
     inp2vec = Input2vec("feature_map_file")
     print inp2vec.create_vector(word, p, pp, nw, nnw)
