@@ -31,7 +31,7 @@ class LogLinearModel:
         x = self._I2V.create_vector(words[0], [words[1], tag_prev],
                                     [words[2], tag_prev_prev], words[3], words[4])
         probs = self._model.predict_log_proba(x)[0]
-        score = probs[int(self._I2V.map[tag])]
+        score = probs[int(self._I2V.T2I[tag])]
         return score
 
     def save_model(self, file_name):

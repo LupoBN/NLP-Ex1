@@ -9,3 +9,4 @@ if __name__ == '__main__':
     llm.load_model(sys.argv[2])
     gt = GreedyTagger(llm)
     print test_model(sys.argv[1], gt)
+

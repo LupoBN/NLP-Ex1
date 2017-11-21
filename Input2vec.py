@@ -8,6 +8,7 @@ class Input2vec():
         self.feature_map = open(feature_map_filename, "r")
         self.map = {}
         self._I2T = {}
+        self.T2I = {}
         self.create_mapping()
         self.creator = FeatureCreator.FeatureCreator()
         self._vec = DictVectorizer(sparse=True)
@@ -28,7 +29,9 @@ class Input2vec():
             key, value = line.split("\t")
             if "=" not in key:
                 self._I2T[value] = key
-            self.map[key] = int(value)
+                self.T2I[key] = value
+            else:
+                self.map[key] = int(value)
 
     def create_vector(self, word, p, pp, nw, nnw):
         """
