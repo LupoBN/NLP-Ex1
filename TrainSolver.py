@@ -7,7 +7,7 @@ import pickle
 class LogLinearModel:
     def __init__(self, I2V = None, file_name = None):
         if file_name is None:
-            self._model = linear_model.LogisticRegression(penalty="l2")
+            self._model = linear_model.LogisticRegression(C=0.1)
         else:
             self._model = pickle.load(open(file_name, 'rb'))
         self._I2V = I2V
@@ -48,6 +48,6 @@ if __name__ == '__main__':
     x_train, y_train = load_svmlight_file(sys.argv[1])
     llm = LogLinearModel()
     llm.train_model(x_train, y_train)
-    llm.save_model(sys.argv[2])
+    llm.save_model("model")
     print "Training accuracy:", llm.test_model(x_train, y_train)
 

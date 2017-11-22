@@ -14,7 +14,6 @@ class Input2vec():
         self._vec = DictVectorizer(sparse=True)
 
         self._vec.fit_transform(self.map)
-        print "map size is ", len(self.map)
 
     def ind_to_tag(self, index):
         return self._I2T[str(index)]
@@ -44,9 +43,7 @@ class Input2vec():
         :return:
         """
         vector = self.creator.create_features(word, p, pp, nw, nnw, True, True)
-        print vector
         features = vector.strip().split(" ")
-        print len(features)
         feature_vec = dict()
         for f in features:
             feature_vec[f] = 1

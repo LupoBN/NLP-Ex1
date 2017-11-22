@@ -186,8 +186,15 @@ class ProbabilityContainer:
     def get_score(self, words, tag, tag_prev, tag_prev_prev):
         q = self.get_q_prob(tag, tag_prev, tag_prev_prev)
         e = self.get_e_prob(words[0], tag)
-
-        score = np.where(q > 0, np.log(q), -np.inf) + np.where(e > 0, np.log(e), -np.inf)
+        if q > 0:
+            q = np.log(q)
+        else:
+            q = -np.inf
+        if e > 0:
+            e = np.log(e)
+        else:
+            e = -np.inf
+        score = q + e
         return score
 
     def get_probabilities(self, words, tag_prev, tag_prev_prev):
@@ -195,7 +202,7 @@ class ProbabilityContainer:
         for tag in self._label_set:
             q = self.get_q_prob(tag, tag_prev, tag_prev_prev)
             e = self.get_e_prob(words[0], tag)
-            score = q * e
+            score = np.log(q) + np.log(e)
             probabilities[tag] = score
         return probabilities
 

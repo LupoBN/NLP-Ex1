@@ -1,13 +1,13 @@
 import time
+
 def test_model(file_name, model):
     test_file = open(file_name)
     lines = test_file.readlines()
-
+    time0 = time.time()
     good, bad = 0., 0.
     n = len(lines)
     print n
     for i in range(n):
-        print str(i)
         words_orig = ("^^^^^/Start " + lines[i]).split(" ")
         words = [word.split("/")[0] for word in words_orig]
         labels = [word.split("/")[1].strip("\n") for word in words_orig]
@@ -22,7 +22,8 @@ def test_model(file_name, model):
 
                 bad += 1
     test_file.close()
-
+    time1 = time.time()
+    print time1 - time0
 
     return (good) / (good + bad)
 
