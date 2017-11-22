@@ -57,11 +57,13 @@ class FeatureCreator():
 
     def create_inner_chars_features(self, word):
         s = ""
+        if len(word) == 0:
+            return s
         if self._contains_number(word):
             s += "number=True "
         if word[0].isupper():
             s += "upper=True "
         if "-" in word:
             s += "hyphen=True "
-        # if len(s) > 0: s+=" "
+       # if len(s) > 0: s+=" "
         return s

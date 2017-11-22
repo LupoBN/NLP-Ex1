@@ -1,0 +1,15 @@
+POS Dataset:
+Greedy - 0.927686516938
+Viterbi - 0.953436199118
+GreedyMaxEnt - 0.953710397089
+MEMM - 0.956626866416
+LogisticRegression Training - 0.984106717304
+
+NER Dataset:
+Greedy - 0.925413936174
+Viterbi - 0.948117414401
+GreedyMaxEnt - 0.965586102602
+MEMM - 0.973690333088
+LogisticRegression Training - 0.993483670067
+
+Span Level evaluation

@@ -14,4 +14,4 @@ if __name__ == '__main__':
     pairs_count.update(unk_count)
     write_file(sys.argv[3], pairs_count, parse_pos_writing)
     possible_labels = parse_possible_labels(words_and_labels)
-    write_file("data/possible_labels.txt", possible_labels, parse_possible_labels_writing)
+    write_file("../data/possible_labels.txt", possible_labels, parse_possible_labels_writing)

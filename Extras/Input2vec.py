@@ -1,6 +1,5 @@
 import FeatureCreator
 from sklearn.feature_extraction import DictVectorizer
-import time
 
 
 class Input2vec():

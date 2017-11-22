@@ -8,7 +8,6 @@ from Input2vec import Input2vec
 
 if __name__ == '__main__':
     i2v = Input2vec(sys.argv[3])
-    llm = LogLinearModel(i2v)
-    llm.load_model(sys.argv[2])
+    llm = LogLinearModel(i2v, sys.argv[2])
     gt = GreedyTagger(llm)
     print test_model(sys.argv[1], gt)
