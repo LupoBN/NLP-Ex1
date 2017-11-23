@@ -21,6 +21,26 @@ def test_model(file_name, model):
     test_file.close()
     return (good) / (good + bad)
 
+def write_prediction_file(read_file, model, text_file):
+    test_file = open(read_file)
+    lines = test_file.readlines()
+    n = len(lines)
+    prediction_text = str()
+    for i in range(n):
+        words_orig = ("^^^^^/Start " + lines[i]).split(" ")
+        words = [word.split("/")[0].strip("\n") for word in words_orig]
+
+        preds = model.predict_tags(words)
+        s = ""
+        for i, word in enumerate(words[1:]):
+            s += word + "/" + preds[i] + " "
+        prediction_text += s + "\n"
+    test_file.close()
+    prediction_file = open(text_file, 'w')
+    prediction_file.write(prediction_text)
+    prediction_file.close()
+
+
 
 def is_number(s):
     try:
@@ -39,11 +59,6 @@ def parse_map_reading(lines):
     pairs_count = {line.split("\t")[0]: int(line.split("\t")[1]) for line in lines}
     return pairs_count
 
-
-
-def parse_count_reading(lines):
-    pairs_count = {line.split("\t")[0]: float(line.split("\t")[1]) for line in lines}
-    return pairs_count
 
 
 def parse_count_reading(lines):

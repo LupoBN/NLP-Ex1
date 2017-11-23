@@ -53,3 +53,4 @@ if __name__ == '__main__':
 
     fe = FeatureExtractor(rare_words, word_set, words_and_labels)
     fe.extract(sys.argv[2])
+

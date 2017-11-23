@@ -11,4 +11,4 @@ if __name__ == '__main__':
     llm = LogLinearModel()
     llm.train_model(x_train, y_train)
     llm.save_model(sys.argv[2])
-    print "Training accuracy:", llm.test_model(x_train, y_train)
+    #print "Training accuracy:", llm.test_model(x_train, y_train)
