@@ -1,0 +1,8 @@
+In order to run the GreedyMaxEnt or the MEMMTag you need supply a model_file and a feature_map_file that were produced by memm TrainSolver.py and ConvertFeatures.py in this directory.
+
+To run GreedyMaxEnt Tagger use this command:
+python GreedyMaxEntTag.py test_file model_file feature_map_file prediction_file
+
+In order to run the MEMM tagger please provice the train_file as the last argument in order to create the data needed for pruning.
+To run MEMM Tagger use this command
+python MEMMTag.py test_file model_file feature_map_file prediction_file train_file
