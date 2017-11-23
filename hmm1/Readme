@@ -1,0 +1,2 @@
+To run use this command:
+python MLETrain.py train_file q_mle_file e_mle_file
