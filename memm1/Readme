@@ -1,0 +1,6 @@
+First you need to run ExtractFeatures.py by this command:
+python ExtractFeatures.py train_file features_file
+Second you need to run ConvertFeatures.py by this command:
+Python ConvertFeatures.py features_file feature_vecs_file feature_map_file
+Third you need to run TrainSolver.py by this command:
+python TrainSolver.py feature_vecs_file model_file
