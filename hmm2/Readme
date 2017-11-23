@@ -1,0 +1,6 @@
+In order to run the GreedyTagger or the HMMTag you need supply a e.mle and q.mle file in this directory
+To run Greedy Tagger use this command:
+python GreedyTag.py test_file q_mle_file e_mle_file prediction_file
+In order to run the virtebi tagger please provice the train_file as the last argument in order to create the data needed for pruning.
+To run Virtebi Tagger use this command
+python GreedyTag.py test_file q_mle_file e_mle_file prediction_file train_file
