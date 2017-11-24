@@ -1,5 +1,6 @@
 import numpy as np
-
+from Helpers import START_TAG
+from Helpers import WORD_START
 
 class GreedyTagger:
     def __init__(self, probs_provider):
@@ -11,8 +12,8 @@ class GreedyTagger:
         :param words: an ordered list of all words in the sentence to predict. starts with a start symbol
         :return: predictions: an ordered list of the predicted labels
         """
-        predictions = ["Start", "Start"]
-        words = ["^^^^"] + words + ["", ""]
+        predictions = [START_TAG, START_TAG]
+        words = [WORD_START] + words + ["", ""]
         for i in range(2, len(words) - 2):  # ignore the first start tag
 
             labels_probs = self.probs.get_probabilities(
@@ -47,7 +48,7 @@ class ViterbiTagger:
         V = np.zeros((n, l, l))
         bp = np.zeros((n, l, l), dtype=int)
 
-        start_key = self.labels_set.index("Start")
+        start_key = self.labels_set.index(START_TAG)
 
         V[0][start_key][start_key] = 1.
         V[1][start_key][start_key] = 1.

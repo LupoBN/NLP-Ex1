@@ -163,7 +163,7 @@ class ProbabilityContainer:
         one_backwards = y + " " + t2
         two_backwards = one_backwards + " " + t1
         # Special case when looking at the first word.
-        if t2 == "Start":
+        if t2 == START_TAG:
             if one_backwards in self._q:
                 return self._q[one_backwards]
             else:

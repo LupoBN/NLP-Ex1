@@ -1,11 +1,13 @@
-
+START_TAG = "Start-"
+WORD_START = "^^^^^"
+WORD_TAG_START = WORD_START + "/" + START_TAG
 def test_model(file_name, model):
     test_file = open(file_name)
     lines = test_file.readlines()
     good, bad = 0., 0.
     n = len(lines)
     for i in range(n):
-        words_orig = ("^^^^^/Start " + lines[i]).split(" ")
+        words_orig = (WORD_TAG_START + " " + lines[i]).split(" ")
         words = [word.split("/")[0] for word in words_orig]
         labels = [word.split("/")[1].strip("\n") for word in words_orig]
         preds = model.predict_tags(words)
@@ -27,7 +29,7 @@ def write_prediction_file(read_file, model, text_file):
     n = len(lines)
     prediction_text = str()
     for i in range(n):
-        words_orig = ("^^^^^/Start " + lines[i]).split(" ")
+        words_orig = (WORD_TAG_START + " " + lines[i]).split(" ")
         words = [word.split("/")[0].strip("\n") for word in words_orig]
 
         preds = model.predict_tags(words)
@@ -51,7 +53,7 @@ def is_number(s):
 
 
 def parse_pos_reading(lines):
-    content = [["^^^^^/Start"] + line.split(" ")[0:-1] for line in lines]
+    content = [[WORD_TAG_START] + line.split(" ")[0:-1] for line in lines]
     data = [word for line in content for word in line]
     return [word.rsplit("/", 1) for word in data]
 

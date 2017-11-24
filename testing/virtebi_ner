@@ -43,7 +43,7 @@ English/I-MISC county/O sides/O and/O another/O against/O British/I-ORG Universi
 as/O well/O as/O one-day/O matches/O against/O the/O Minor/O Counties/O and/O 
 Scotland/I-LOC ./O 
 Tour/I-MISC itinerary/O :/O 
-May/Start 
+May/Start- 
 May/O 13/O Arrive/O in/O London/I-LOC 
 May/O 14/O Practice/O at/O Lord/O 's/O 
 May/O 15/O v/O Duke/O of/O Norfolk/O 's/O XI/O (/O at/O Arundel/O )/O 
@@ -58,21 +58,21 @@ May/O 25/O Third/O one-day/O international/O (/O at/O Lord/O 's/O ,/O London/I-L
 May/O 27-29/O v/O Gloucestershire/I-ORG or/O Sussex/I-ORG or/O Surrey/I-ORG (/O three/O 
 days/O )/O 
 May/O 31/O -/O June/O 2/O v/O Derbyshire/I-ORG (/O three/O days/O )/O 
-June/Start 
+June/Start- 
 June/O 5-9/O First/O test/O match/O (/O at/O Edgbaston/I-LOC ,/O Birmingham/I-LOC )/O 
 June/O 11-13/I-MISC v/O a/O first/O class/O county/O (/O to/O be/O confirmed/O )/O 
 June/O 14-16/O v/O Leicestershire/I-ORG (/O three/O days/O )/O 
 June/O 19-23/O Second/O test/O (/O at/O Lord/O 's/O )/O 
 June/O 25-27/O v/O British/I-ORG Universities/I-ORG (/O at/O Oxford/I-ORG ,/O three/O days/O )/O 
 June/O 28-30/O v/O Hampshire/I-ORG (/O three/O days/O )/O 
-July/Start 
+July/Start- 
 July/O 3-7/O Third/O test/O (/O at/O Old/I-LOC Trafford/I-LOC ,/O Manchester/I-ORG )/O 
 July/O 9/O v/O Minor/O Counties/O XI/I-ORG 
 July/O 12/O v/O Scotland/I-LOC 
 July/O 16-18/O v/O Glamorgan/I-ORG (/O three/O days/O )/O 
 July/O 19-21/O v/O Middlesex/I-ORG (/O three/O days/O )/O 
 July/O 24-28/O Fourth/I-ORG test/O (/O at/O Headingley/I-LOC )/O 
-August/Start 
+August/Start- 
 August/O 1-4/O v/O Somerset/I-ORG (/O four/O days/O )/O 
 August/O 7-11/O Fifth/O test/O (/O at/O Trent/I-LOC Bridge/I-LOC ,/O Nottingham/I-LOC )/O 
 August/O 16-18/O v/O Kent/I-ORG (/O three/O days/O )/O 
@@ -200,18 +200,18 @@ Add/O Men/O 's/O singles/O ,/O second/O round/O 16/O -/O Cedric/I-PER Pioline/I-
 Add/O Women/O 's/O singles/O ,/O third/O round/O Linda/I-PER Wild/I-PER (/O U.S./I-LOC )/O beat/O Barbara/I-PER Rittner/I-PER (/O Germany/I-LOC )/O 6-4/O 4-6/O 7-5/O Asa/I-PER Carlsson/I-PER (/O Sweden/I-LOC )/O beat/O 15/O -/O Gabriela/I-PER Sabatini/I-PER (/O Argentina/I-LOC )/O 7-5/O 3-6/O 6-2/O 
 Add/O Men/O 's/O singles/O ,/O second/O round/O 1/O -/O Pete/I-PER Sampras/I-PER (/O U.S./I-LOC )/O beat/O Jiri/I-PER Novak/I-PER (/O Czech/I-LOC Republic/I-LOC )/O 6-3/O 1-6/O 6-3/O 4-6/O 6-4/O Paul/I-PER Haarhuis/I-PER (/O Netherlands/I-LOC )/O beat/O Michael/I-PER Tebbutt/I-PER (/O Australia/I-LOC )/O 1-/O 6/O 6-2/O 6-2/O 6-3/O 
 Add/O Women/O 's/O singles/O ,/O third/O round/O Lisa/I-PER Raymond/I-PER (/O U.S./I-LOC )/O beat/O Kimberly/I-PER Po/I-PER (/O U.S./I-LOC )/O 6-3/O 6-2/O 
-:/Start 
+:/Start- 
 Add/O men/O 's/O singles/O ,/O second/O round/O 
 Hendrik/I-PER Dreekmann/I-PER (/O Germany/I-LOC )/O beat/O Thomas/I-PER Johansson/I-PER (/O Sweden/I-LOC )/O 
 7-6/O (/O 7-1/O )/O 6-2/O 4-6/O 6-1/O 
 Andrei/I-PER Medvedev/I-PER (/O Ukraine/I-LOC )/O beat/O Jan/I-PER Kroslak/I-PER (/O Slovakia/I-LOC )/O 6-4/O 6-3/O 
-6-2/Start 
+6-2/Start- 
 Petr/I-PER Korda/I-PER (/O Czech/I-LOC Republic/I-LOC )/O bat/O Bohdan/I-PER Ulihrach/I-PER (/O Czech/I-LOC 
 Republic/I-LOC )/O 6-0/O 7-6/O (/O 7-5/O )/O 6-2/O 
 Add/O women/O 's/O singles/O ,/O third/O round/O 
 2/O -/O Monica/I-PER Seles/I-PER (/O U.S./I-LOC )/O beat/O Dally/I-PER Randriantefy/I-PER (/O Madagascar/I-LOC )/O 
 6-0/O 6-2/O 
-:/Start 
+:/Start- 
 Add/O men/O 's/O singles/O ,/O second/O round/O 12/O -/O Todd/I-PER Martin/I-PER (/O U.S./I-LOC )/O beat/O Andrea/I-PER Gaudenzi/I-PER (/O Italy/I-LOC )/O 6-3/O 6-2/O 6-2/O Stefan/I-PER Edberg/I-PER (/O Sweden/I-LOC )/O beat/O Bernd/I-PER Karbacher/I-PER (/O Germany/I-LOC )/O 3-6/O 6-3/O 6-3/O 1-0/O retired/O (/O leg/O injury/O )/O 
 -DOCSTART-/O 
 BASEBALL/O -/O MAJOR/I-MISC LEAGUE/I-MISC STANDINGS/O AFTER/O THURSDAY/O 'S/O GAMES/O ./O 
@@ -619,7 +619,7 @@ COLOMBO/I-LOC 1996-08-30/O
 Scoreboard/O of/O the/O third/O Singer/I-MISC 
 World/I-MISC Series/I-MISC cricket/O match/O between/O Australia/I-LOC and/O Sri/I-LOC Lanka/I-LOC on/O 
 Friday/O :/O 
-Australia/Start 
+Australia/Start- 
 M./I-PER Waugh/I-PER c/O and/O b/O Jayasuriya/I-PER 50/O 
 M./I-PER Slater/I-PER run/O out/O 9/O 
 S./I-PER Law/I-PER c/O Tillekeratne/I-PER b/O Dharmasena/I-PER 13/O 
@@ -1838,7 +1838,7 @@ Final/O overall/O placings/O (/O after/O six/O stages/O )/O :/O
 CRICKET/O -/O ENGLAND/I-LOC V/O PAKISTAN/I-LOC ONE-DAY/O SCOREBOARD/O ./O 
 BIRMINGHAM/O ,/O England/I-LOC 1996-08-31/O 
 Scoreboard/O of/O the/O second/O one-day/O cricket/O match/O between/O England/I-LOC and/O Pakistan/I-LOC on/O Saturday/O :/O 
-England/Start 
+England/Start- 
 N./I-PER Knight/I-PER st/O Moin/I-PER Khan/I-PER b/O Saqlain/I-PER Mushtaq/I-PER 113/O 
 A./I-PER Stewart/I-PER b/O Mushtaq/I-PER Ahmed/I-PER 46/O 
 M./I-PER Atherton/I-PER lbw/O b/O Mushtaq/I-PER Ahmed/I-PER 1/O 
@@ -3036,7 +3036,7 @@ Crowds/O of/O pro-independence/O Chechens/I-MISC greeted/O a/O newly-signed/O pe
 More/O than/O a/O thousand/O women/O ,/O children/O and/O men/O gathered/O in/O a/O field/O to/O the/O north/O of/O the/O town/O of/O Urus-Martan/O on/O Saturday/O to/O wait/O for/O a/O column/O of/O rebels/O to/O withdraw/O from/O the/O capital/O Grozny/I-LOC about/O 25/O km/O (/O 12/O miles/O )/O away/O ./O 
 The/O men/O fired/O weapons/O into/O the/O air/O as/O groups/O of/O women/O danced/O ./O 
 Adults/O in/O the/O crowd/O carried/O posters/O of/O former/O Chechen/I-MISC leader/O Dzhokhar/O Dudayev/O --/O who/O declared/O independence/O in/O 1991/O --/O and/O children/O ,/O carrying/O photographs/O of/O him/O ,/O called/O "/O Troops/O out/O !/O "/O 
-./Start 
+./Start- 
 Russian/I-MISC military/O officials/O have/O expressed/O fears/O that/O the/O rebels/O and/O their/O supporters/O will/O see/O the/O deal/O signed/O by/O Russian/I-MISC peace/O envoy/O Alexander/I-PER Lebed/I-PER in/O the/O early/O hours/O of/O Saturday/O as/O a/O military/O victory/O for/O the/O separatists/O ./O 
 It/O involves/O the/O withdrawal/O of/O Russian/I-MISC troops/O sent/O to/O Chechnya/I-LOC in/O December/O 1994/O to/O crush/O the/O separatists/O and/O a/O postponement/O of/O the/O issue/O at/O the/O heart/O of/O the/O conflict/O --/O the/O status/O of/O the/O mainly-Moslem/O North/I-LOC Caucasus/I-LOC region/O ./O 
 But/O the/O people/O in/O the/O crowd/O on/O Saturday/O ,/O who/O had/O turned/O out/O in/O support/O of/O the/O rebels/O ,/O did/O not/O seem/O sure/O that/O the/O war/O was/O over/O ./O 
@@ -3052,7 +3052,7 @@ Mouldi/O Mamatuyev/O ,/O in/O his/O late/O 20/O 's/O ,/O dressed/O in/O black/O 
 It/O 's/O the/O end/O ./O 
 We/O believe/O in/O God/I-PER ./O "/O 
 Mamatuyev/O joked/O that/O his/O sister/O Lisa/I-PER was/O a/O rebel/O too/O ,/O and/O she/O responded/O by/O grabbing/O hold/O of/O his/O gun/O and/O shouting/O the/O Chechen/I-MISC war/O cry/O "/O Allahu/I-PER Akhbar/O "/O (/O God/I-PER is/O Greatest/O )/O and/O "/O Freedom/I-ORG for/O Chechnya/I-LOC !/O "/O 
-./Start 
+./Start- 
 The/O fighter/O ,/O sitting/O next/O to/O a/O man/O dressed/O in/O green/O and/O carrying/O a/O grenade-launcher/O ,/O said/O that/O the/O strict/O Islamic/I-MISC law/O adopted/O by/O the/O rebels/O during/O the/O conflict/O was/O now/O needed/O to/O impose/O peace/O ./O 
 "/O The/O war/O has/O ended/O if/O everything/O works/O out/O ,/O if/O there/O is/O law/O there/O will/O be/O power/O ./O 
 Only/O Sheriat/O (/O Islamic/I-MISC law/O )/O can/O end/O the/O war/O ./O "/O 
