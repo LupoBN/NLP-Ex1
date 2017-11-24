@@ -1,6 +1,8 @@
 START_TAG = "Start-"
 WORD_START = "^^^^^"
 WORD_TAG_START = WORD_START + "/" + START_TAG
+
+
 def test_model(file_name, model):
     test_file = open(file_name)
     lines = test_file.readlines()
@@ -8,20 +10,21 @@ def test_model(file_name, model):
     n = len(lines)
     for i in range(n):
         words_orig = (WORD_TAG_START + " " + lines[i]).split(" ")
-        words = [word.split("/")[0] for word in words_orig]
-        labels = [word.split("/")[1].strip("\n") for word in words_orig]
+        words = [word.rsplit("/", 1)[0] for word in words_orig]
+        labels = [word.rsplit("/", 1)[1].strip("\n") for word in words_orig]
         preds = model.predict_tags(words)
         s = ""
-        for i, word in enumerate(words[1:]):
+        for j, word in enumerate(words[1:]):
 
-            s += word + "(" + preds[i] + ") "
-            if preds[i] == labels[i + 1]:
+            s += word + "(" + preds[j] + ") "
+            if preds[j] == labels[j + 1]:
                 good += 1
             else:
 
                 bad += 1
     test_file.close()
     return (good) / (good + bad)
+
 
 def write_prediction_file(read_file, model, text_file):
     test_file = open(read_file)
@@ -30,18 +33,16 @@ def write_prediction_file(read_file, model, text_file):
     prediction_text = str()
     for i in range(n):
         words_orig = (WORD_TAG_START + " " + lines[i]).split(" ")
-        words = [word.split("/")[0].strip("\n") for word in words_orig]
-
+        words = [word.rsplit("/", 1)[0].strip("\n") for word in words_orig]
         preds = model.predict_tags(words)
         s = ""
-        for i, word in enumerate(words[1:]):
-            s += word + "/" + preds[i] + " "
+        for j, word in enumerate(words[1:]):
+            s += word + "/" + preds[j] + " "
         prediction_text += s + "\n"
     test_file.close()
     prediction_file = open(text_file, 'w')
     prediction_file.write(prediction_text)
     prediction_file.close()
-
 
 
 def is_number(s):
@@ -57,10 +58,10 @@ def parse_pos_reading(lines):
     data = [word for line in content for word in line]
     return [word.rsplit("/", 1) for word in data]
 
+
 def parse_map_reading(lines):
     pairs_count = {line.split("\t")[0]: int(line.split("\t")[1]) for line in lines}
     return pairs_count
-
 
 
 def parse_count_reading(lines):
